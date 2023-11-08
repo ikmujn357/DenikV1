@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Horní panel s tlačítky -->
+    <LinearLayout
+        android:id="@+id/topPanel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:drawableStart="@android:drawable/ic_menu_add" />
+
+        <Button
+            android:id="@+id/button_find"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:drawableStart="@android:drawable/ic_menu_search" />
+
+        <Button
+            android:id="@+id/button_statistics"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:drawableTop="@android:drawable/ic_menu_sort_by_size" />
+
+    </LinearLayout>
+
+    <!-- Recyclerview pro zobrazení seznamu lezeckých cest -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topPanel" />
+
+    <!-- Tlačítko pro export -->
+    <Button
+        android:id="@+id/exportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Export"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
