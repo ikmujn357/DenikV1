@@ -23,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,44 +58,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+
 }
 
 
-
-
-
-
-
-
-/*
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.zapis)
-
-    }
-}
-
- */
-
-
-
-
-
-
-/*
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.vyhledavani)
-
-        // Inicializace RecyclerView a přiřazení layout manageru
-        val layoutManager = LinearLayoutManager(this)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = layoutManager
-    }
-}
-
- */

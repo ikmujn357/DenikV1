@@ -13,15 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="false"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/top_navigation_menu" />
 
     <FrameLayout
         android:id="@+id/content_container"
-        android:layout_marginTop="48dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/bottom_navigation">
     </FrameLayout>
 
-    <!-- Navigační panel -->
 </RelativeLayout>
