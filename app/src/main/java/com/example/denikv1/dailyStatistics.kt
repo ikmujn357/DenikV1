@@ -18,8 +18,8 @@ class DailyStatistics : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.denni, container, false)
 
+        val view = inflater.inflate(R.layout.denni, container, false)
         graph1(view)
         graph2(view)
 

@@ -2,33 +2,29 @@ package com.example.denikv1
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.animation.Animation
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.RotateAnimation
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
+    private val cesty = ArrayList<Cesta>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        cesty.add(Cesta("Pata cesta", "8+"))
+        cesty.add(Cesta("Ctvrta cesta", "6"))
+        cesty.add(Cesta("Treti cesta", "4"))
+        cesty.add(Cesta("Druha cesta", "7-"))
+        cesty.add(Cesta("Prvni cesta", "9"))
+
+        val taskList = findViewById<RecyclerView>(R.id.recyclerView)
+        taskList.layoutManager = LinearLayoutManager(this)
+        taskList.adapter = CestaAdapter(cesty)
 
         supportActionBar?.elevation = 0f
 
@@ -37,23 +33,22 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = layoutManager
 
+
+
         val buttonShowAdd = findViewById<Button>(R.id.button_add)
         buttonShowAdd.setOnClickListener {
-            // Po kliknutí na tlačítko zobrazíme statistiky (přejdeme na novou aktivitu)
             val intent = Intent(this, AddActivity::class.java)
             startActivity(intent)
         }
 
         val buttonShowFind = findViewById<Button>(R.id.button_find)
         buttonShowFind.setOnClickListener {
-            // Po kliknutí na tlačítko zobrazíme statistiky (přejdeme na novou aktivitu)
             val intent = Intent(this, FindActivity::class.java)
             startActivity(intent)
         }
 
         val buttonShowStatistics = findViewById<Button>(R.id.button_statistics)
         buttonShowStatistics.setOnClickListener {
-            // Po kliknutí na tlačítko zobrazíme statistiky (přejdeme na novou aktivitu)
             val intent = Intent(this, ShowStatistics::class.java)
             startActivity(intent)
         }

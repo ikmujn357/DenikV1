@@ -19,6 +19,7 @@ class AllStatistics : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.celkova, container, false)
 
+
         val graphView = view.findViewById<GraphView>(R.id.graph_obtiznost)
 
         val series = BarGraphSeries(arrayOf(
