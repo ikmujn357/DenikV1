@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ShowStatistics : AppCompatActivity() {
-    private val dailyStatistics = DailyStatistics()
-    private val allStatistics = AllStatistics()
+    private val dailyStatistics = DailyStatisticsFragment()
+    private val allStatistics = AllStatisticsFragment()
     private var activeFragment: Fragment = dailyStatistics
 
     override fun onCreate(savedInstanceState: Bundle?) {
