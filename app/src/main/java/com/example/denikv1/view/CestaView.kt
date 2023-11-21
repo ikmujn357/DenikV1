@@ -4,51 +4,53 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-
 interface CestaView {
-    suspend fun displayCesty()
+    fun displayCesty()
     fun addButton()
     fun findButton()
     fun statisticsButton()
-
-
 }
 
-class CestaViewImp : AppCompatActivity(), CestaView {
+class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScope(){
     private lateinit var controller: CestaController
-    private lateinit var cestaViewModel: CestaModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val appDatabase = AppDatabase.getDatabase(applicationContext)
-        val cestaDao = appDatabase.cestaDao()
-        cestaViewModel = CestaModelImpl(this)
-        controller = CestaControllerImpl(CestaModelImpl(this))
+        val cestaRepository: CestaModel = CestaModelImpl(this)
+        controller = CestaControllerImpl(cestaRepository)
 
         supportActionBar?.elevation = 0f
 
-        GlobalScope.launch {
-            displayCesty()
-        }
+        displayCesty()
         addButton()
         findButton()
         statisticsButton()
-
     }
 
-    override suspend fun displayCesty() {
-        val taskList = findViewById<RecyclerView>(R.id.recyclerView)
-        taskList.layoutManager = LinearLayoutManager(this)
-        taskList.adapter = CestaAdapter(controller.getAllCesta())
+    override fun displayCesty() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
+        // Use the Main dispatcher for UI updates
+        lifecycleScope.launch(Dispatchers.Main) {
+            val layoutManager = LinearLayoutManager(this@CestaViewImp)
+            layoutManager.reverseLayout = true  // Obrácené zobrazení
+            layoutManager.stackFromEnd = true    // Zobrazit položky odspoda
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = CestaAdapter(controller.getAllCesta())
+        }
     }
 
     override fun addButton() {
@@ -59,7 +61,7 @@ class CestaViewImp : AppCompatActivity(), CestaView {
         }
     }
 
-    override fun findButton(){
+    override fun findButton() {
         val buttonShowFind = findViewById<Button>(R.id.button_find)
         buttonShowFind.setOnClickListener {
             val intent = Intent(this, FindActivity::class.java)
@@ -67,7 +69,7 @@ class CestaViewImp : AppCompatActivity(), CestaView {
         }
     }
 
-    override fun statisticsButton(){
+    override fun statisticsButton() {
         val buttonShowStatistics = findViewById<Button>(R.id.button_statistics)
         buttonShowStatistics.setOnClickListener {
             val intent = Intent(this, ShowStatistics::class.java)
@@ -75,58 +77,12 @@ class CestaViewImp : AppCompatActivity(), CestaView {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
 
-}
-
-
-
-
-
-
-
-
-
-/*
-
-@Entity(tableName = "cesta_table")
-data class VylezenaCesta(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val nazev: String,
-    val obtiznost: String,
-)
-
-
-
-@Dao
-interface CestaDao {
-    @Query("SELECT * FROM cesta_table")
-    fun getAllCesty(): Flow<List<VylezenaCesta>>
-
-    @Insert
-    suspend fun insertCesta(cesta: VylezenaCesta)
-}
-
-@Database(entities = [VylezenaCesta::class], version = 1, exportSchema = false)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun cestaDao(): CestaDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "app_database"
-                ).build()
-                INSTANCE = instance
-                instance
-            }
+        // Use the activity's coroutine scope and launch on the main thread
+        launch {
+            displayCesty()
         }
     }
 }
-
-*/

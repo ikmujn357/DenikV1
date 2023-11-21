@@ -8,8 +8,7 @@ interface CestaController {
 
 class CestaControllerImpl(
     private val cestaModel: CestaModel,
-    //private val cestaView: CestaView,
-    //private val cestaViewModel: CestaViewModel
+
 ) : CestaController {
 
     override suspend fun addCesta(cesta: CestaEntity) {

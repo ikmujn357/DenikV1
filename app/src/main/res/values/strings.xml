@@ -3,4 +3,11 @@
     <string name="informace">Informace o cestě</string>
     <string name="datum">Datum</string>
 
+    <string-array name="Grade">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
+
+
 </resources>
