@@ -8,14 +8,17 @@ interface AllStatisticsController {
     fun getXLabelsGraph(): Array<String>
 }
 
+
 class AllStatisticsControllerImpl(
     private val model: AllStatisticsModel
 ) : AllStatisticsController {
 
+    //metoda pro získání dat pro sloupcový graf
     override fun getDataGraph(): BarGraphSeries<DataPoint> {
         return model.getDataGraph()
     }
 
+    //metoda pro získání osy X pro graf.
     override fun getXLabelsGraph(): Array<String> {
         return model.getXLabelsGraph()
     }

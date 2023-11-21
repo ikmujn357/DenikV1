@@ -18,7 +18,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/cestaTitle"
+            android:id="@+id/cestaName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Název cesty"
@@ -26,7 +26,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/cestaDescription"
+            android:id="@+id/cestaGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Obtiznost"

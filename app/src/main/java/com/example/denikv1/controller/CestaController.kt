@@ -2,22 +2,25 @@ package com.example.denikv1
 
 
 interface CestaController {
-    fun addCesta(cesta: Cesta)
-    fun getAllCesty(): List<Cesta>
-    // Další metody pro manipulaci s daty a aktualizaci zobrazení
+    fun addCesta(cesta: CestaEntity)
+    fun getAllCesty(): List<CestaEntity>
 }
 
-class CestaControllerImpl(private val cestaModel: CestaModel, private val cestaView: CestaView) : CestaController {
+class CestaControllerImpl(
+    private val cestaModel: CestaModel,
+    private val cestaView: CestaView,
+    private val cestaViewModel: CestaViewModel
+) : CestaController {
 
-    override fun addCesta(cesta: Cesta) {
+    override fun addCesta(cesta: CestaEntity) {
         cestaModel.addCesta(cesta)
         getAllCesty()
     }
 
-    override fun getAllCesty(): List<Cesta> {
+    override fun getAllCesty(): List<CestaEntity> {
         return cestaModel.getAllCesty()
     }
 
 
-    // Další metody pro manipulaci s daty a aktualizaci zobrazení
+
 }

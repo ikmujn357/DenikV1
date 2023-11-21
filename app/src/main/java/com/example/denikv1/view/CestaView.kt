@@ -1,5 +1,6 @@
 package com.example.denikv1
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -7,22 +8,29 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+
+
 interface CestaView {
     fun displayCesty()
     fun addButton()
     fun findButton()
     fun statisticsButton()
-    // Další metody pro zobrazení informací na uživatelském rozhraní
+
+
 }
 
-class CestaViewImp  : AppCompatActivity(), CestaView {
+class CestaViewImp : AppCompatActivity(), CestaView {
     private lateinit var controller: CestaController
+    private lateinit var cestaViewModel: CestaViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        val cestaRepository: CestaModel = CestaModelImpl()
-        controller = CestaControllerImpl(cestaRepository,this)
+
+        val appDatabase = AppDatabase.getDatabase(applicationContext)
+        val cestaDao = appDatabase.cestaDao()
+        cestaViewModel = CestaViewModel(cestaDao)
+        controller = CestaControllerImpl(CestaModelImpl(), this, cestaViewModel)
 
         supportActionBar?.elevation = 0f
 
@@ -37,6 +45,7 @@ class CestaViewImp  : AppCompatActivity(), CestaView {
         val taskList = findViewById<RecyclerView>(R.id.recyclerView)
         taskList.layoutManager = LinearLayoutManager(this)
         taskList.adapter = CestaAdapter(controller.getAllCesty())
+
     }
 
     override fun addButton() {
@@ -62,4 +71,59 @@ class CestaViewImp  : AppCompatActivity(), CestaView {
             startActivity(intent)
         }
     }
+
+
 }
+
+
+
+
+
+
+
+
+
+/*
+
+@Entity(tableName = "cesta_table")
+data class VylezenaCesta(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val nazev: String,
+    val obtiznost: String,
+)
+
+
+
+@Dao
+interface CestaDao {
+    @Query("SELECT * FROM cesta_table")
+    fun getAllCesty(): Flow<List<VylezenaCesta>>
+
+    @Insert
+    suspend fun insertCesta(cesta: VylezenaCesta)
+}
+
+@Database(entities = [VylezenaCesta::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun cestaDao(): CestaDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "app_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
+
+*/

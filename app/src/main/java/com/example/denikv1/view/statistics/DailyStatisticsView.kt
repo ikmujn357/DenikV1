@@ -12,7 +12,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter
 interface DailyStatisticsView {
     fun displayGraph1(view: View)
     fun displayGraph2(view: View)
-    // Další metody pro zobrazení informací na uživatelském rozhraní
+
 }
 
 class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
