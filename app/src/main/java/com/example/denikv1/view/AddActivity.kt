@@ -2,7 +2,6 @@ package com.example.denikv1
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.denikv1.R
 
 class AddActivity : AppCompatActivity() {
 

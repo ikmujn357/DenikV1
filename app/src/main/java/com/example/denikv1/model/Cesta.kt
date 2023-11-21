@@ -3,7 +3,7 @@ package com.example.denikv1
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "cesta_table")
+@Entity()
 data class CestaEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

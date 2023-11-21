@@ -2,23 +2,23 @@ package com.example.denikv1
 
 
 interface CestaController {
-    fun addCesta(cesta: CestaEntity)
-    fun getAllCesty(): List<CestaEntity>
+    suspend fun addCesta(cesta: CestaEntity)
+    suspend fun getAllCesta(): List<CestaEntity>
 }
 
 class CestaControllerImpl(
     private val cestaModel: CestaModel,
-    private val cestaView: CestaView,
-    private val cestaViewModel: CestaViewModel
+    //private val cestaView: CestaView,
+    //private val cestaViewModel: CestaViewModel
 ) : CestaController {
 
-    override fun addCesta(cesta: CestaEntity) {
-        cestaModel.addCesta(cesta)
-        getAllCesty()
+    override suspend fun addCesta(cesta: CestaEntity) {
+        cestaModel.insertCesta(cesta)
+        getAllCesta()
     }
 
-    override fun getAllCesty(): List<CestaEntity> {
-        return cestaModel.getAllCesty()
+    override suspend fun getAllCesta(): List<CestaEntity> {
+        return cestaModel.getAllCesta()
     }
 
 

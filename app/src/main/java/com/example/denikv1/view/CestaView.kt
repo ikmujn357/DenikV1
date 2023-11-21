@@ -7,11 +7,12 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 interface CestaView {
-    fun displayCesty()
+    suspend fun displayCesty()
     fun addButton()
     fun findButton()
     fun statisticsButton()
@@ -21,7 +22,7 @@ interface CestaView {
 
 class CestaViewImp : AppCompatActivity(), CestaView {
     private lateinit var controller: CestaController
-    private lateinit var cestaViewModel: CestaViewModel
+    private lateinit var cestaViewModel: CestaModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,22 +30,24 @@ class CestaViewImp : AppCompatActivity(), CestaView {
 
         val appDatabase = AppDatabase.getDatabase(applicationContext)
         val cestaDao = appDatabase.cestaDao()
-        cestaViewModel = CestaViewModel(cestaDao)
-        controller = CestaControllerImpl(CestaModelImpl(), this, cestaViewModel)
+        cestaViewModel = CestaModelImpl(this)
+        controller = CestaControllerImpl(CestaModelImpl(this))
 
         supportActionBar?.elevation = 0f
 
-        displayCesty()
+        GlobalScope.launch {
+            displayCesty()
+        }
         addButton()
         findButton()
         statisticsButton()
 
     }
 
-    override fun displayCesty() {
+    override suspend fun displayCesty() {
         val taskList = findViewById<RecyclerView>(R.id.recyclerView)
         taskList.layoutManager = LinearLayoutManager(this)
-        taskList.adapter = CestaAdapter(controller.getAllCesty())
+        taskList.adapter = CestaAdapter(controller.getAllCesta())
 
     }
 

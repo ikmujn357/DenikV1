@@ -1,15 +1,18 @@
 package com.example.denikv1
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CestaDao {
-    @Query("SELECT * FROM cesta_table")
-    fun getAllCesty(): Flow<List<CestaEntity>>
-
     @Insert
     suspend fun insertCesta(cesta: CestaEntity)
+
+    @Query("SELECT * FROM CestaEntity")
+    suspend fun getAllCesta(): List<CestaEntity>
+
+    @Delete
+    suspend fun deleteCesta(cesta: CestaEntity)
 }
