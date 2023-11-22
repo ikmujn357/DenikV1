@@ -3,16 +3,21 @@ package com.example.denikv1
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class AddActivity : AppCompatActivity() {
     // Instance modelu pro práci s databází
     private val cestaModel: CestaModel = CestaModelImpl(this)
+
+
+    private var selectedDate: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,13 @@ class AddActivity : AppCompatActivity() {
         val addCestaButton: Button = findViewById(R.id.saveButton)
         addCestaButton.setOnClickListener {
             newCesta()
+        }
+
+        val calendarView: CalendarView = findViewById(R.id.calendarView)
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val calendar = Calendar.getInstance()
+            calendar.set(year, month, dayOfMonth)
+            selectedDate = calendar.timeInMillis
         }
     }
 
@@ -100,13 +112,15 @@ class AddActivity : AppCompatActivity() {
                     minuteCount,
                     secondCount,
                     descriptionRoad,
-                    opinionRoad
+                    opinionRoad,
+                    selectedDate
                 )
                 finish()                                            // Zavře aktivitu a vrátí se o 1 slide zpátky
-                showToast("Cesta přidána!", 5)      // Zobrazí krátkou zprávu
+                showToast("Cesta přidána!", 6)      // Zobrazí krátkou zprávu
             }
         } else {
-            showToast("Vyplňte všechna políčka.", 5)
+            finish()
+            showToast("Nevyplnil jste všechna políčka.", 5)
         }
     }
 

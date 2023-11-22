@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 interface CestaModel {
     // Získání všech uložených cest
     suspend fun getAllCesta(): List<CestaEntity>
-    // Odstranění cesty z databáze
+    // Odstranění cesty z databáze NEPOUŽÍVÁ SE ZATÍM
     suspend fun removeCesta(cesta: CestaEntity)
     //Vložení nové cesty do databáze.
     suspend fun insertCesta(cesta: CestaEntity)
@@ -24,7 +24,8 @@ interface CestaModel {
         timeMinute: Int,
         timeSecond: Int,
         description: String,
-        opinion: String)
+        opinion: String,
+        selectedDate: Long)
 }
 
     class CestaModelImpl(private val context: Context) : CestaModel {
@@ -34,7 +35,7 @@ interface CestaModel {
         override suspend fun getAllCesta(): List<CestaEntity> = withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCesta()
         }
-        // Odstranění cesty z databáze na pozadí   NEPOUŽÍVÁ SE ZATÍM
+        // Odstranění cesty z databáze   NEPOUŽÍVÁ SE ZATÍM
         override suspend fun removeCesta(cesta: CestaEntity) {
             cestaDao.deleteCesta(cesta)
         }
@@ -54,7 +55,8 @@ interface CestaModel {
             timeMinute: Int,
             timeSecond: Int,
             description: String,
-            opinion: String) {
+            opinion: String,
+            selectedDate: Long) {
             val newCesta = CestaEntity(
                     roadName = roadName,
                     fallCount = fallCount,
@@ -64,7 +66,8 @@ interface CestaModel {
                     timeMinute = timeMinute,
                     timeSecond = timeSecond,
                     description = description,
-                    opinion = opinion)
+                    opinion = opinion,
+                    date = selectedDate)
             insertCesta(newCesta)
         }
 }

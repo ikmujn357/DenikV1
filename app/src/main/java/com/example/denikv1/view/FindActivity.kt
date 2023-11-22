@@ -7,7 +7,7 @@ import com.example.denikv1.R
 // vyhledávání cest
 class FindActivity : AppCompatActivity() {
 
-        // Metoda volaná při vytvoření aktivity
+    // Metoda volaná při vytvoření aktivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Nastavení obsahu aktivity na layout vyhledavani.xml

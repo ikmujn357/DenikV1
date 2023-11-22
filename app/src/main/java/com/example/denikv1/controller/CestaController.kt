@@ -17,7 +17,7 @@ class CestaControllerImpl(
         getAllCesta()
     }
 
-    // Získá seznam všech cest z datového modelu.
+    // íská seznam všech cest z datového modelu.
     override suspend fun getAllCesta(): List<CestaEntity> {
         return cestaModel.getAllCesta()
     }

@@ -48,7 +48,6 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
     override fun displayCesty() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
-        // Use the Main dispatcher for UI updates
         lifecycleScope.launch(Dispatchers.Main) {
             val layoutManager = LinearLayoutManager(this@CestaViewImp)
             layoutManager.reverseLayout = true  // Obrácené zobrazení

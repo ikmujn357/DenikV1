@@ -16,7 +16,8 @@ data class CestaEntity(
     val timeMinute: Int,
     val timeSecond: Int,
     val description: String,
-    val opinion: String
+    val opinion: String,
+    val date: Long
 ) {
     // Konstruktor pro vytvoření instance
     constructor(
@@ -28,8 +29,9 @@ data class CestaEntity(
         timeMinute: Int,
         timeSecond: Int,
         description: String,
-        opinion: String
+        opinion: String,
+        date: Long
     ) : this(
-        0, roadName, fallCount, climbStyle, grade, roadChar, timeMinute, timeSecond, description, opinion
+        0, roadName, fallCount, climbStyle, grade, roadChar, timeMinute, timeSecond, description, opinion, date
     )
 }
