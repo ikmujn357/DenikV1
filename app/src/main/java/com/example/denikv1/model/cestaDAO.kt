@@ -5,6 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
+// Data Access Object pro manipulaci s entitou CestaEntity v databázi.
+//obsahuje metody pro vkládání, získávání a mazání záznamů v tabulce CestaEntity.
 @Dao
 interface CestaDao {
     @Insert

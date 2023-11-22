@@ -3,6 +3,7 @@ package com.example.denikv1
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// Entita reprezentující informace o lezení na cestě.
 @Entity()
 data class CestaEntity(
     @PrimaryKey(autoGenerate = true)

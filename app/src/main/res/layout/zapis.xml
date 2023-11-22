@@ -48,14 +48,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-
                 android:text="Počet pádů" />
 
             <EditText
                 android:id="@+id/fallEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
+                android:inputType="number"
                 android:layout_gravity="center"
                 android:hint="Počet pádů"
                 android:layout_below="@id/opinionTitle"

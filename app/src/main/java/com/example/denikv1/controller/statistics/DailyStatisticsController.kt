@@ -13,6 +13,7 @@ interface DailyStatisticsController {
     fun getXLabelsGraph2(): Array<String>
 }
 
+// implementace kontroléru pro denní statistiky
 class DailyStatisticsControllerImpl(
     private val view: DailyStatisticsView,
     private val model: DailyStatisticsModel

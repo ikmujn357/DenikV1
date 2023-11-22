@@ -8,7 +8,7 @@ interface AllStatisticsController {
     fun getXLabelsGraph(): Array<String>
 }
 
-
+// implementace kontroléru pro celkové statistiky
 class AllStatisticsControllerImpl(
     private val model: AllStatisticsModel
 ) : AllStatisticsController {

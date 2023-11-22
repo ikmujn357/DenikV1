@@ -6,11 +6,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
+// Rozhraní pro datový model.
 interface CestaModel {
+    // Získání všech uložených cest
     suspend fun getAllCesta(): List<CestaEntity>
+    // Odstranění cesty z databáze
     suspend fun removeCesta(cesta: CestaEntity)
+    //Vložení nové cesty do databáze.
     suspend fun insertCesta(cesta: CestaEntity)
+    // Přidání nové cesty s informacemi
     suspend fun addNewCesta(
         roadName: String,
         fallCount: Int,
@@ -25,18 +29,21 @@ interface CestaModel {
 
     class CestaModelImpl(private val context: Context) : CestaModel {
         private val cestaDao = AppDatabase.getDatabase(context).cestaDao()
+
+        //Získání všech uložených cest z databáze
         override suspend fun getAllCesta(): List<CestaEntity> = withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCesta()
         }
-
+        // Odstranění cesty z databáze na pozadí   NEPOUŽÍVÁ SE ZATÍM
         override suspend fun removeCesta(cesta: CestaEntity) {
             cestaDao.deleteCesta(cesta)
         }
-
+        // Vložení nové cesty do databáze
         override suspend fun insertCesta(cesta: CestaEntity) = withContext(Dispatchers.IO) {
             cestaDao.insertCesta(cesta)
         }
 
+        // Přidání nové cesty s poskytnutými informacemi.
 
         override suspend fun addNewCesta(
             roadName: String,

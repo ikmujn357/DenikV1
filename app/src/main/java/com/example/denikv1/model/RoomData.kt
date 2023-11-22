@@ -13,6 +13,7 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        //Metoda pro získání instance databáze. návrhový vzor Singleton (jedna instance databáze pro celou aplikaci)
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(

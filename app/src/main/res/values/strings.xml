@@ -9,5 +9,18 @@
         <item>Hard</item>
     </string-array>
 
+    <string-array name="Style">
+        <item>Flash</item>
+        <item>On sight</item>
+        <item>Top rope</item>
+        <item>Redpoited</item>
+        <item>Pink point</item>
+    </string-array>
+
+    <string-array name="Character">
+        <item>Technická</item>
+        <item>Silová</item>
+        <item>Kombinace</item>
+    </string-array>
 
 </resources>

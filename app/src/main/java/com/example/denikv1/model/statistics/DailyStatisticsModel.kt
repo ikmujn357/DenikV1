@@ -11,6 +11,8 @@ interface DailyStatisticsModel {
     fun getXLabelsGraph2(): Array<String>
 }
 
+
+// Implementace rozhraní pro demonstraci dat DOČASNÉ ŘEŠENÍ
 class DailyStatisticsModelImpl : DailyStatisticsModel {
 
     private val dataGraph1 = BarGraphSeries(

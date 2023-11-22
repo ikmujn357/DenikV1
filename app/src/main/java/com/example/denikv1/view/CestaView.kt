@@ -21,25 +21,30 @@ interface CestaView {
     fun statisticsButton()
 }
 
+// Implementace view seznam cest
 class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScope(){
     private lateinit var controller: CestaController
 
-
+    // Metoda volaná při vytvoření aktivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        // Inicializace repozitáře pro práci s cestami
         val cestaRepository: CestaModel = CestaModelImpl(this)
         controller = CestaControllerImpl(cestaRepository)
 
+        // Odstranění stínu z action baru
         supportActionBar?.elevation = 0f
 
+        // Zobrazení seznamu cest, a tlačítek přidat cestu, najít cestu a statistika
         displayCesty()
         addButton()
         findButton()
         statisticsButton()
     }
 
+    // Metoda pro zobrazení seznamu cest
     override fun displayCesty() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
@@ -53,6 +58,7 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         }
     }
 
+    // Metoda pro přidání tlačítka pro přidání nové cesty
     override fun addButton() {
         val buttonShowAdd = findViewById<Button>(R.id.button_add)
         buttonShowAdd.setOnClickListener {
@@ -61,6 +67,7 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         }
     }
 
+    // Metoda pro přidání tlačítka pro vyhledávání
     override fun findButton() {
         val buttonShowFind = findViewById<Button>(R.id.button_find)
         buttonShowFind.setOnClickListener {
@@ -69,6 +76,7 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         }
     }
 
+    // Metoda pro přidání tlačítka pro zobrazení statistik
     override fun statisticsButton() {
         val buttonShowStatistics = findViewById<Button>(R.id.button_statistics)
         buttonShowStatistics.setOnClickListener {
@@ -77,10 +85,11 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         }
     }
 
+    // Metoda volaná při obnovení aktivity
     override fun onResume() {
         super.onResume()
 
-        // Use the activity's coroutine scope and launch on the main thread
+        // Spuštění metody pro zobrazení seznamu cest v rámci aktivity
         launch {
             displayCesty()
         }
