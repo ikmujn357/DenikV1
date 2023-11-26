@@ -2,28 +2,41 @@ package com.example.denikv1
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.CalendarView
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import android.widget.EditText
 
 class FindActivity : AppCompatActivity() {
+
+    private lateinit var nameEditText: EditText
+    private lateinit var calendarView: CalendarView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var layoutByName: LinearLayout
+    private lateinit var layoutByDate: LinearLayout
+    private lateinit var radioGroup: RadioGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.vyhledavani)
 
-        val calendarView = findViewById<CalendarView>(R.id.calendarView)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewVyhledavani)
+        calendarView = findViewById(R.id.calendarView)
+        recyclerView = findViewById(R.id.recyclerViewVyhledavani)
+        nameEditText = findViewById(R.id.nameEditText)
+        layoutByName = findViewById(R.id.layoutByName)
+        layoutByDate = findViewById(R.id.layoutByDate)
+        radioGroup = findViewById(R.id.searchOptions)
 
-        // Nastavení kalendáře na aktuální datum
         calendarView.date = System.currentTimeMillis()
 
-        // Automatické získání aktuálního data
         val currentDate = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -31,13 +44,25 @@ class FindActivity : AppCompatActivity() {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-        // Volání funkce pro načtení cest z databáze pro aktuální datum
         loadAndDisplayCesty(currentDate)
 
-        // Nastavení listeneru pro změnu data v kalendáři
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             onDateChanged(year, month, dayOfMonth)
         }
+
+        val findButton: Button = findViewById(R.id.findButton)
+        findButton.setOnClickListener {
+            onFindButtonClick()
+        }
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radioName -> showLayoutByName()
+                R.id.radioDate -> showLayoutByDate()
+            }
+        }
+
+        showLayoutByName()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.elevation = 0f
@@ -49,14 +74,24 @@ class FindActivity : AppCompatActivity() {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-        // Nastavení na konec dne
         val selectedDateEnd = Calendar.getInstance().apply {
             set(year, month, dayOfMonth, 23, 59, 59)
             set(Calendar.MILLISECOND, 999)
         }.timeInMillis
 
-        // Volání funkce pro načtení cest z databáze pro vybraný rozsah datumů
         loadAndDisplayCesty(selectedDateStart, selectedDateEnd)
+    }
+
+    private fun onFindButtonClick() {
+        if (isLayoutByNameVisible()) {
+            val searchName = nameEditText.text.toString()
+            if (searchName.isNotBlank()) {
+                loadAndDisplayCesty(searchName)
+            }
+        } else {
+            val selectedDate = calendarView.date
+            loadAndDisplayCesty(selectedDate)
+        }
     }
 
     private fun loadAndDisplayCesty(startDate: Long, endDate: Long = startDate) {
@@ -71,12 +106,35 @@ class FindActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateRecyclerView(cesty: List<CestaEntity>) {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewVyhledavani)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+    private fun loadAndDisplayCesty(searchName: String) {
+        val controller = CestaControllerImpl(CestaModelImpl(this))
+        lifecycleScope.launch {
+            try {
+                val cesty = controller.getAllCestaByName(searchName)
+                updateRecyclerView(cesty)
+            } catch (e: Exception) {
+                Log.e("FindActivity", "Error loading and displaying cesty", e)
+            }
+        }
+    }
 
-        // Předejte výchozí posluchač kliknutí, který nic nedělá
+    private fun updateRecyclerView(cesty: List<CestaEntity>) {
+        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = CestaAdapter(cesty) { _ -> }
+    }
+
+    private fun isLayoutByNameVisible(): Boolean {
+        return layoutByName.visibility == LinearLayout.VISIBLE
+    }
+
+    private fun showLayoutByName() {
+        layoutByName.visibility = LinearLayout.VISIBLE
+        layoutByDate.visibility = LinearLayout.GONE
+    }
+
+    private fun showLayoutByDate() {
+        layoutByName.visibility = LinearLayout.GONE
+        layoutByDate.visibility = LinearLayout.VISIBLE
     }
 
     override fun onSupportNavigateUp(): Boolean {

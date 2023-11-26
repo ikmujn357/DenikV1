@@ -37,6 +37,8 @@ interface CestaModel {
 
     suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity>
     suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
+    suspend fun getCestaById(cestaId: Long): CestaEntity
+    suspend fun getAllCestaByName(roadName: String): List<CestaEntity>
 }
 
 class CestaModelImpl(private val context: Context) : CestaModel {
@@ -124,6 +126,18 @@ class CestaModelImpl(private val context: Context) : CestaModel {
     override suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity> {
         return withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCestaForDateRange(startDate, endDate)
+        }
+    }
+    override suspend fun getCestaById(cestaId: Long): CestaEntity {
+        return cestaDao.getCestaById(cestaId)
+    }
+
+    // dát do kontorléru :)
+    override suspend fun getAllCestaByName(partialName: String): List<CestaEntity> {
+        return withContext(Dispatchers.IO) {
+            return@withContext cestaDao.getAllCesta().filter { cesta ->
+                cesta.roadName.contains(partialName, ignoreCase = true)
+            }
         }
     }
 }

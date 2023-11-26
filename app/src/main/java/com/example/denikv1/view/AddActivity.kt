@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AddActivity : AppCompatActivity() {
-    // Instance modelu pro práci s databází
     private val cestaModel: CestaModel = CestaModelImpl(this)
 
     private var selectedDate: Long = 0
@@ -22,14 +21,11 @@ class AddActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.zapis)
 
-        // Nastavení tlačítka zpět v action baru
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.elevation = 0f
 
-        // Inicializace a nastavení obsahu Spinnerů
         setupSpinner()
 
-        // Nastavení pro tlačítko přidání cesty
         val addCestaButton: Button = findViewById(R.id.saveButton)
         addCestaButton.setOnClickListener {
             newCesta()
@@ -42,9 +38,18 @@ class AddActivity : AppCompatActivity() {
             selectedDate = calendar.timeInMillis
         }
 
+        // Získání předaného ID cesty
+        val receivedIntent = intent
+        val cestaId = receivedIntent.getLongExtra("cestaId", 0)
 
+        if (cestaId != 0L) {
+            // Načtení informací o cestě pomocí ID a zobrazení v UI
+            lifecycleScope.launch {
+                val cesta = cestaModel.getCestaById(cestaId)
+                populateUI(cesta)
+            }
+        }
     }
-
     // Metoda pro inicializaci obsahů Spinnerů (3 spinnery)
     private fun setupSpinner() {
         // Odkazy na Spinnery z layoutu zapis.xml
@@ -141,4 +146,40 @@ class AddActivity : AppCompatActivity() {
         onBackPressedDispatcher.onBackPressed()
         return true
     }
+    private fun populateUI(cesta: CestaEntity) {
+        // Nastavení hodnot do jednotlivých polí ve vaší aktivitě
+        val roadNameEditText: EditText = findViewById(R.id.nameEditText)
+        val fallEditText: EditText = findViewById(R.id.fallEditText)
+        val roadStyleSpinner: Spinner = findViewById(R.id.styleSpinner)
+        val roadGradeSpinner: Spinner = findViewById(R.id.difficultySpinner)
+        val roadCharSpinner: Spinner = findViewById(R.id.characterSpinner)
+        val minuteEditText: EditText = findViewById(R.id.minutesEditText)
+        val secondEditText: EditText = findViewById(R.id.secondsEditText)
+        val descriptionEditText: EditText = findViewById(R.id.descriptionEditText)
+        val opinionEditText: EditText = findViewById(R.id.opinionEditText)
+
+        // Nastavení hodnot získaných z objektu cesty
+        roadNameEditText.setText(cesta.roadName)
+        fallEditText.setText(cesta.fallCount.toString())
+        minuteEditText.setText(cesta.timeMinute.toString())
+        secondEditText.setText(cesta.timeSecond.toString())
+        descriptionEditText.setText(cesta.description)
+        opinionEditText.setText(cesta.opinion)
+
+        // Nastavení vybraného data
+        val calendarView: CalendarView = findViewById(R.id.calendarView)
+        calendarView.setDate(cesta.date)
+
+        // Nastavení hodnot do spinnerů
+        val difficultyLevels = resources.getStringArray(R.array.Grade)
+        val styleLevels = resources.getStringArray(R.array.Style)
+        val characterLevels = resources.getStringArray(R.array.Character)
+
+        // Nastavení pozice vybrané hodnoty v každém spinneru
+        roadGradeSpinner.setSelection(difficultyLevels.indexOf(cesta.grade))
+        roadStyleSpinner.setSelection(styleLevels.indexOf(cesta.climbStyle))
+        roadCharSpinner.setSelection(characterLevels.indexOf(cesta.roadChar))
+    }
+
 }
+

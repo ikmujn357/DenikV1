@@ -1,6 +1,8 @@
 package com.example.denikv1
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 interface CestaController {
@@ -10,6 +12,7 @@ interface CestaController {
 
     suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
     suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity>
+    suspend fun getAllCestaByName(roadName: String): List<CestaEntity>
 }
 
 class CestaControllerImpl(
@@ -34,6 +37,9 @@ class CestaControllerImpl(
     }
     override suspend fun getAllCestaForDate(date: Long): List<CestaEntity> {
         return cestaModel.getAllCestaForDate(date)
+    }
+    override suspend fun getAllCestaByName(roadName: String): List<CestaEntity> {
+        return cestaModel.getAllCestaByName(roadName)
     }
 }
 

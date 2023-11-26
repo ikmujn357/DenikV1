@@ -23,4 +23,10 @@ interface CestaDao {
 
     @Query("SELECT * FROM CestaEntity WHERE date BETWEEN :startDate AND :endDate")
     suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
+
+    @Query("SELECT * FROM CestaEntity WHERE id = :cestaId")
+    suspend fun getCestaById(cestaId: Long): CestaEntity
+
+    @Query("SELECT * FROM CestaEntity WHERE roadName = :roadName")
+    suspend fun getAllCestaByName(roadName: String): List<CestaEntity>
 }
