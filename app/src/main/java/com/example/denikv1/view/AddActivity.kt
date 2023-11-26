@@ -1,7 +1,6 @@
 package com.example.denikv1
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.EditText

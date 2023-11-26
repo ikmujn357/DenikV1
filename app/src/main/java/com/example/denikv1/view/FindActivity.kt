@@ -1,12 +1,12 @@
 package com.example.denikv1
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -120,7 +120,12 @@ class FindActivity : AppCompatActivity() {
 
     private fun updateRecyclerView(cesty: List<CestaEntity>) {
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = CestaAdapter(cesty) { _ -> }
+        recyclerView.adapter = CestaAdapter(cesty) { cestaId ->
+            // Přesměrování na AddActivity s předáním ID cesty
+            val intent = Intent(this@FindActivity, AddActivity::class.java)
+            intent.putExtra("cestaId", cestaId)
+            startActivity(intent)
+        }
     }
 
     private fun isLayoutByNameVisible(): Boolean {
