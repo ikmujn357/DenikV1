@@ -17,4 +17,10 @@ interface CestaDao {
 
     @Delete
     suspend fun deleteCesta(cesta: CestaEntity)
+
+    @Query("SELECT * FROM CestaEntity WHERE date = :selectedDate")
+    suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity>
+
+    @Query("SELECT * FROM CestaEntity WHERE date BETWEEN :startDate AND :endDate")
+    suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
 }

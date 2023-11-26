@@ -16,7 +16,6 @@ class AddActivity : AppCompatActivity() {
     // Instance modelu pro práci s databází
     private val cestaModel: CestaModel = CestaModelImpl(this)
 
-
     private var selectedDate: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +41,8 @@ class AddActivity : AppCompatActivity() {
             calendar.set(year, month, dayOfMonth)
             selectedDate = calendar.timeInMillis
         }
+
+
     }
 
     // Metoda pro inicializaci obsahů Spinnerů (3 spinnery)
@@ -53,13 +54,17 @@ class AddActivity : AppCompatActivity() {
 
         // Načtení hodnot pro Spinners ze string.xml
         val difficultyLevels = resources.getStringArray(R.array.Grade)
-        val StyleLevels = resources.getStringArray(R.array.Style)
+        val styleLevels = resources.getStringArray(R.array.Style)
         val characterLevels = resources.getStringArray(R.array.Character)
 
-        // Adaptéry pro přiřazení hodnot k Spinnerům
-        val adapterDif = ArrayAdapter(this, android.R.layout.simple_spinner_item, difficultyLevels)
-        val adapterStyle = ArrayAdapter(this, android.R.layout.simple_spinner_item, StyleLevels)
-        val adapterCharacter = ArrayAdapter(this, android.R.layout.simple_spinner_item, characterLevels)
+        // Upravení adaptérů pro použití vlastního layoutu
+        val adapterDif = CustomArrayAdapter(this, R.layout.item_spinner, difficultyLevels.toList())
+        val adapterStyle = CustomArrayAdapter(this, R.layout.item_spinner, styleLevels.toList())
+        val adapterCharacter = CustomArrayAdapter(this, R.layout.item_spinner, characterLevels.toList())
+
+        roadGradeSpinner.adapter = adapterDif
+        roadStyleSpinner.adapter = adapterStyle
+        roadCharacterSpinner.adapter = adapterCharacter
 
         // Nastavení vzhledu a chování Spinnerů
         adapterDif.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -88,21 +93,24 @@ class AddActivity : AppCompatActivity() {
         // Získání hodnot z vstupních prvků
         val cestaName = roadNameEditText.text.toString()
         val fallCountString = fallEditText.text.toString()
-        val fallCount: Int= fallCountString.toInt()
         val styleSpinner = roadStyleSpinner.selectedItem.toString()
         val gradeSpinner = roadGradeSpinner.selectedItem.toString()
         val charSpinner = roadCharSpinner.selectedItem.toString()
         val minuteString = minuteEditText.text.toString()
-        val minuteCount: Int= minuteString.toInt()
         val secondString = secondEditText.text.toString()
-        val secondCount: Int= secondString.toInt()
         val descriptionRoad = descriptionEditText.text.toString()
         val opinionRoad = opinionEditText.text.toString()
 
+        // Zkontrolovat, zda uživatel vybral datum; pokud ne, použít aktuální datum
+        val currentDate = if (selectedDate == 0L) System.currentTimeMillis() else selectedDate
 
+        // Kontrola prázdných políček
         if (cestaName.isNotBlank() && fallCountString.isNotBlank() && minuteString.isNotBlank() && secondString.isNotBlank()
             && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank() && descriptionRoad.isNotBlank() && opinionRoad.isNotBlank()) {
             lifecycleScope.launch {
+                val fallCount: Int = fallCountString.toInt()
+                val minuteCount: Int = minuteString.toInt()
+                val secondCount: Int = secondString.toInt()
                 cestaModel.addNewCesta(
                     cestaName,
                     fallCount,
@@ -113,18 +121,17 @@ class AddActivity : AppCompatActivity() {
                     secondCount,
                     descriptionRoad,
                     opinionRoad,
-                    selectedDate
+                    currentDate // Použít currentDate místo selectedDate
                 )
-                finish()                                            // Zavře aktivitu a vrátí se o 1 slide zpátky
-                showToast("Cesta přidána!", 6)      // Zobrazí krátkou zprávu
+                finish() // Zavře aktivitu a vrátí se o 1 slide zpátky
+                showToast("Cesta přidána!", Toast.LENGTH_LONG) // Zobrazí zprávu
             }
         } else {
-            finish()
-            showToast("Nevyplnil jste všechna políčka.", 5)
+            showToast("Nevyplnil jste všechno.", Toast.LENGTH_SHORT)
         }
     }
 
-    //// Metoda pro zobrazení zprávy
+    // Metoda pro zobrazení zprávy
     private fun showToast(message: String, duration: Int) {
         Toast.makeText(this, message, duration).show()
     }

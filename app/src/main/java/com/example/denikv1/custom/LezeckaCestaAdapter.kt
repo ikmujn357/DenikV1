@@ -1,5 +1,6 @@
 package com.example.denikv1
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 // Adapter pro propojení dat cest s RecyclerView.
-class CestaAdapter(private val cesta: List<CestaEntity>) : RecyclerView.Adapter<CestaAdapter.CestaViewHolder>() {
+class CestaAdapter(private val cesta: List<CestaEntity>, private val cestaClickListener: (Long) -> Unit) :
+    RecyclerView.Adapter<CestaAdapter.CestaViewHolder>() {
 
     // ViewHolder pro každý prvek v RecyclerView.
     class CestaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -27,12 +29,17 @@ class CestaAdapter(private val cesta: List<CestaEntity>) : RecyclerView.Adapter<
         holder.CestaName.text = cesta.roadName
         holder.CestaGrade.text = cesta.grade
 
-
-    // Nastavení odstupu mezi položkami v RecyclerView
+        // Nastavení odstupu mezi položkami v RecyclerView
         val spacingInPixels = holder.itemView.resources.getDimensionPixelSize(R.dimen.spacing_between_items)
         val layoutParams = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.setMargins(spacingInPixels, spacingInPixels, spacingInPixels, spacingInPixels)
         holder.itemView.layoutParams = layoutParams
+
+        // Přidání poslechu na kliknutí na položku
+        holder.itemView.setOnClickListener {
+            val cestaId = cesta.id
+            cestaClickListener.invoke(cestaId)
+        }
     }
 
     //Vrací počet položek v seznamu.

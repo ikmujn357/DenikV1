@@ -19,10 +19,11 @@ interface CestaView {
     fun addButton()
     fun findButton()
     fun statisticsButton()
+    fun exportButton()
 }
 
-// Implementace view seznam cest
-class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScope(){
+// Implementace view seznamu cest
+class CestaViewImp : AppCompatActivity(), CestaView, CoroutineScope by MainScope() {
     private lateinit var controller: CestaController
 
     // Metoda volaná při vytvoření aktivity
@@ -37,11 +38,12 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         // Odstranění stínu z action baru
         supportActionBar?.elevation = 0f
 
-        // Zobrazení seznamu cest, a tlačítek přidat cestu, najít cestu a statistika
+        // Zobrazení seznamu cest a tlačítek pro přidání cesty, vyhledání a statistiky
         displayCesty()
         addButton()
         findButton()
         statisticsButton()
+        exportButton()
     }
 
     // Metoda pro zobrazení seznamu cest
@@ -50,10 +52,18 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
 
         lifecycleScope.launch(Dispatchers.Main) {
             val layoutManager = LinearLayoutManager(this@CestaViewImp)
-            layoutManager.reverseLayout = true  // Obrácené zobrazení
-            layoutManager.stackFromEnd = true    // Zobrazit položky odspoda
+            layoutManager.reverseLayout = true
+            layoutManager.stackFromEnd = true
             recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = CestaAdapter(controller.getAllCesta())
+
+            val adapter = CestaAdapter(controller.getAllCesta()) { cestaId ->
+                // Přesměrování na AddActivity s předáním ID cesty
+                val intent = Intent(this@CestaViewImp, AddActivity::class.java)
+                intent.putExtra("cestaId", cestaId)
+                startActivity(intent)
+            }
+
+            recyclerView.adapter = adapter
         }
     }
 
@@ -91,6 +101,28 @@ class CestaViewImp : AppCompatActivity(), CestaView,  CoroutineScope by MainScop
         // Spuštění metody pro zobrazení seznamu cest v rámci aktivity
         launch {
             displayCesty()
+        }
+    }
+
+    // Funkce pro zobrazení vyskakovací zprávy (Toast)
+    private fun showToast(message: String, duration: Int) {
+        Toast.makeText(this, message, duration).show()
+    }
+
+    // Metoda pro přidání tlačítka pro export dat
+    override fun exportButton() {
+        val exportButton = findViewById<Button>(R.id.exportButton)
+        exportButton.setOnClickListener {
+            lifecycleScope.launch {
+                val fileName = "exported_data.csv"
+                try {
+                    controller.exportDataToFile(applicationContext, fileName)
+                    showToast("Data úspěšně exportována.", Toast.LENGTH_SHORT)
+                } catch (e: Exception) {
+                    showToast("Chyba při exportu dat: ${e.message}", Toast.LENGTH_SHORT)
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }

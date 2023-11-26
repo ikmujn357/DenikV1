@@ -1,27 +1,41 @@
 package com.example.denikv1
 
+import android.content.Context
+
 
 interface CestaController {
-    // Přidá novou cestu do datového modelu.
     suspend fun addCesta(cesta: CestaEntity)
-    // Získá seznam všech cest z datového modelu.
     suspend fun getAllCesta(): List<CestaEntity>
+    suspend fun exportDataToFile(context: Context, fileName: String)
+
+    suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
+    suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity>
 }
 
 class CestaControllerImpl(
     private val cestaModel: CestaModel,
-    ) : CestaController {
-    // Přidá novou cestu do datového modelu a zavolá metodu pro získání všech cest.
+) : CestaController {
+
     override suspend fun addCesta(cesta: CestaEntity) {
         cestaModel.insertCesta(cesta)
         getAllCesta()
     }
 
-    // íská seznam všech cest z datového modelu.
     override suspend fun getAllCesta(): List<CestaEntity> {
         return cestaModel.getAllCesta()
     }
 
+    override suspend fun exportDataToFile(context: Context, fileName: String) {
+        cestaModel.exportDataToFile(context, fileName)
+    }
 
-
+    override suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity> {
+        return cestaModel.getAllCestaForDateRange(startDate, endDate)
+    }
+    override suspend fun getAllCestaForDate(date: Long): List<CestaEntity> {
+        return cestaModel.getAllCestaForDate(date)
+    }
 }
+
+
+

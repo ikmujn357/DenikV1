@@ -13,8 +13,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
-
             <CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="wrap_content"
@@ -37,7 +35,6 @@
                 android:inputType="textMultiLine"
                 android:layout_gravity="center"
                 android:hint="Jméno cesty"
-                android:layout_below="@id/opinionTitle"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:padding="16dp" />
@@ -48,20 +45,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Vyhledat"
-                android:layout_below="@id/opinionEditText"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="32dp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerViewVyhledavani"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/topPanel" />
 
-
-
         </LinearLayout>
-
-
     </RelativeLayout>
 </ScrollView>
