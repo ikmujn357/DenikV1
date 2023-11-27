@@ -1,23 +1,24 @@
 package com.example.denikv1
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 // Entita reprezentující informace o lezení na cestě.
-@Entity()
+@Entity
 data class CestaEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val roadName: String,
-    val fallCount: Int,
-    val climbStyle: String,
-    val grade: String,
-    val roadChar: String,
-    val timeMinute: Int,
-    val timeSecond: Int,
-    val description: String,
-    val opinion: String,
-    val date: Long
+    var id: Long = 0,
+    var roadName: String,
+    var fallCount: Int,
+    var climbStyle: String,
+    var grade: String,
+    var roadChar: String,
+    var timeMinute: Int,
+    var timeSecond: Int,
+    var description: String,
+    var opinion: String,
+    var date: Long
 ) {
     // Konstruktor pro vytvoření instance
     constructor(

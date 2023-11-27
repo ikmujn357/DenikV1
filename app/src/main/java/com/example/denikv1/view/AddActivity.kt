@@ -111,24 +111,54 @@ class AddActivity : AppCompatActivity() {
         // Kontrola prázdných políček
         if (cestaName.isNotBlank() && fallCountString.isNotBlank() && minuteString.isNotBlank() && secondString.isNotBlank()
             && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank() && descriptionRoad.isNotBlank() && opinionRoad.isNotBlank()) {
+
+            // Získání předaného ID cesty
+            val receivedIntent = intent
+            val cestaId = receivedIntent.getLongExtra("cestaId", 0)
+
             lifecycleScope.launch {
-                val fallCount: Int = fallCountString.toInt()
-                val minuteCount: Int = minuteString.toInt()
-                val secondCount: Int = secondString.toInt()
-                cestaModel.addNewCesta(
-                    cestaName,
-                    fallCount,
-                    styleSpinner,
-                    gradeSpinner,
-                    charSpinner,
-                    minuteCount,
-                    secondCount,
-                    descriptionRoad,
-                    opinionRoad,
-                    currentDate // Použít currentDate místo selectedDate
-                )
-                finish() // Zavře aktivitu a vrátí se o 1 slide zpátky
-                showToast("Cesta přidána!", Toast.LENGTH_LONG) // Zobrazí zprávu
+                // Pokud máme cestaId, provedeme aktualizaci existující cesty
+                if (cestaId != 0L) {
+                    val existingCesta = cestaModel.getCestaById(cestaId)
+
+                    // Aktualizace existující cesty s novými hodnotami
+                    existingCesta.apply {
+                        this.roadName = cestaName
+                        this.fallCount = fallCountString.toInt()
+                        this.climbStyle = styleSpinner
+                        this.grade = gradeSpinner
+                        this.roadChar = charSpinner
+                        this.timeMinute = minuteString.toInt()
+                        this.timeSecond = secondString.toInt()
+                        this.description = descriptionRoad
+                        this.opinion = opinionRoad
+                        this.date = currentDate
+                    }
+
+                    // Aktualizace cesty v databázi
+                    cestaModel.removeCesta(existingCesta)
+                    cestaModel.insertCesta(existingCesta)
+
+                    showToast("Cesta aktualizována!", Toast.LENGTH_LONG)
+                    finish()
+                } else {
+                    // Pokud nemáme cestaId, vytvoříme a vložíme novou cestu
+                    cestaModel.addNewCesta(
+                        cestaName,
+                        fallCountString.toInt(),
+                        styleSpinner,
+                        gradeSpinner,
+                        charSpinner,
+                        minuteString.toInt(),
+                        secondString.toInt(),
+                        descriptionRoad,
+                        opinionRoad,
+                        currentDate
+                    )
+
+                    showToast("Cesta přidána!", Toast.LENGTH_LONG)
+                    finish()
+                }
             }
         } else {
             showToast("Nevyplnil jste všechno.", Toast.LENGTH_SHORT)
