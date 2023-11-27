@@ -110,7 +110,7 @@ class AddActivity : AppCompatActivity() {
 
         // Kontrola prázdných políček
         if (cestaName.isNotBlank() && fallCountString.isNotBlank() && minuteString.isNotBlank() && secondString.isNotBlank()
-            && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank() && descriptionRoad.isNotBlank() && opinionRoad.isNotBlank()) {
+            && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank()) {
 
             // Získání předaného ID cesty
             val receivedIntent = intent
