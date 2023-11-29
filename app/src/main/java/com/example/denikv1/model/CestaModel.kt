@@ -12,83 +12,81 @@ import java.util.Locale
 
 // Rozhraní pro datový model.
 interface CestaModel {
-    // Získání všech uložených cest
+    // Metoda pro získání všech cest.
     suspend fun getAllCesta(): List<CestaEntity>
-    // Odstranění cesty z databáze NEPOUŽÍVÁ SE ZATÍM
+
+    // Metoda pro odstranění cesty. NEPOUŽÍVÁ SE ZATÍM
     suspend fun removeCesta(cesta: CestaEntity)
-    // Vložení nové cesty do databáze.
+
+    // Metoda pro vložení cesty.
     suspend fun insertCesta(cesta: CestaEntity)
-    // Přidání nové cesty s informacemi
-    suspend fun addNewCesta(
-        roadName: String,
-        fallCount: Int,
-        climbStyle: String,
-        grade: String,
-        roadChar: String,
-        timeMinute: Int,
-        timeSecond: Int,
-        description: String,
-        opinion: String,
-        selectedDate: Long
-    )
 
-    // Export dat do souboru ve formátu UTF-8
-    suspend fun exportDataToFile(context: Context, fileName: String)
+    // Metoda pro přidání nebo aktualizaci cesty.
+    suspend fun addOrUpdateCesta(cesta: CestaEntity)
 
+    // Metoda pro získání všech cest na konkrétní datum.
     suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity>
+
+    // Metoda pro získání všech cest v určeném časovém rozmezí.
     suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity>
+
+    // Metoda pro získání cesty podle ID.
     suspend fun getCestaById(cestaId: Long): CestaEntity
+
+    // Metoda pro získání všech cest podle částečného názvu.
     suspend fun getAllCestaByName(roadName: String): List<CestaEntity>
+
+    // Metoda pro export dat do souboru CSV.
+    suspend fun exportDataToFile(context: Context, fileName: String)
 }
 
+// Implementace rozhraní CestaModel.
 class CestaModelImpl(private val context: Context) : CestaModel {
+    // Získání přístupu k databázi.
     private val cestaDao = AppDatabase.getDatabase(context).cestaDao()
 
-    //Získání všech uložených cest z databáze
+    // Metoda pro získání všech cest.
     override suspend fun getAllCesta(): List<CestaEntity> = withContext(Dispatchers.IO) {
         return@withContext cestaDao.getAllCesta()
     }
 
-    // Odstranění cesty z databáze   NEPOUŽÍVÁ SE ZATÍM
+    // Metoda pro odstranění cesty.
     override suspend fun removeCesta(cesta: CestaEntity) {
         cestaDao.deleteCesta(cesta)
     }
 
-    // Vložení nové cesty do databáze
+    // Metoda pro vložení cesty.
     override suspend fun insertCesta(cesta: CestaEntity) = withContext(Dispatchers.IO) {
         cestaDao.insertCesta(cesta)
     }
 
-
-    // Přidání nové cesty s poskytnutými informacemi.
-    override suspend fun addNewCesta(
-        roadName: String,
-        fallCount: Int,
-        climbStyle: String,
-        grade: String,
-        roadChar: String,
-        timeMinute: Int,
-        timeSecond: Int,
-        description: String,
-        opinion: String,
-        selectedDate: Long
-    ) {
-        val newCesta = CestaEntity(
-            roadName = roadName,
-            fallCount = fallCount,
-            climbStyle = climbStyle,
-            grade = grade,
-            roadChar = roadChar,
-            timeMinute = timeMinute,
-            timeSecond = timeSecond,
-            description = description,
-            opinion = opinion,
-            date = selectedDate
-        )
-        insertCesta(newCesta)
+    // Metoda pro přidání nebo aktualizaci cesty.
+    override suspend fun addOrUpdateCesta(cesta: CestaEntity) {
+        if (cesta.id != 0L) {
+            // Aktualizace existující cesty
+            val existingCesta = getCestaById(cesta.id)
+            existingCesta.apply {
+                // Aktualizace hodnot
+                roadName = cesta.roadName
+                fallCount = cesta.fallCount
+                climbStyle = cesta.climbStyle
+                grade = cesta.grade
+                roadChar = cesta.roadChar
+                timeMinute = cesta.timeMinute
+                timeSecond = cesta.timeSecond
+                description = cesta.description
+                opinion = cesta.opinion
+                date = cesta.date
+            }
+            removeCesta(existingCesta)
+            insertCesta(existingCesta)
+        } else {
+            // Přidání nové cesty
+            insertCesta(cesta)
+        }
     }
 
-    // Export dat do souboru ve formátu UTF-8
+    // Metoda pro export dat do souboru CSV.
     override suspend fun exportDataToFile(context: Context, fileName: String) {
         withContext(Dispatchers.IO) {
             val data = cestaDao.getAllCesta()
@@ -111,28 +109,34 @@ class CestaModelImpl(private val context: Context) : CestaModel {
             }
         }
     }
+
+    // Pomocná metoda pro formátování data do textové podoby (datum zapsaný pro čechy)
     private fun formatDate(date: Long): String {
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern, Locale.getDefault())
         return simpleDateFormat.format(Date(date))
     }
 
+    // Metoda pro získání všech cest na konkrétní datum.
     override suspend fun getAllCestaForDate(selectedDate: Long): List<CestaEntity> {
         return withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCestaForDate(selectedDate)
         }
     }
 
+    // Metoda pro získání všech cest v určeném časovém rozmezí.
     override suspend fun getAllCestaForDateRange(startDate: Long, endDate: Long): List<CestaEntity> {
         return withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCestaForDateRange(startDate, endDate)
         }
     }
+
+    // Metoda pro získání cesty podle ID.
     override suspend fun getCestaById(cestaId: Long): CestaEntity {
         return cestaDao.getCestaById(cestaId)
     }
 
-    // dát do kontorléru :)
+    // Metoda pro získání všech cest podle částečného názvu.
     override suspend fun getAllCestaByName(partialName: String): List<CestaEntity> {
         return withContext(Dispatchers.IO) {
             return@withContext cestaDao.getAllCesta().filter { cesta ->

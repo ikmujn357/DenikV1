@@ -12,24 +12,32 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AddActivity : AppCompatActivity() {
+    // Inicializace modelu a controlleru
     private val cestaModel: CestaModel = CestaModelImpl(this)
-
+    private val cestaController: CestaController = CestaControllerImpl(cestaModel)
+    // Proměnná pro uchování vybraného data
     private var selectedDate: Long = 0
+    // Předané ID cesty
+    private var cestaId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.zapis)
 
+        // Nastavení tlačítka zpět v akčním baru
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.elevation = 0f
 
+        // Inicializace obsahu Spinnerů
         setupSpinner()
 
+        // Nastavení Listener pro tlačítko uložení cesty
         val addCestaButton: Button = findViewById(R.id.saveButton)
         addCestaButton.setOnClickListener {
             newCesta()
         }
 
+        // Nastavení Listener pro změnu data v kalendáři
         val calendarView: CalendarView = findViewById(R.id.calendarView)
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val calendar = Calendar.getInstance()
@@ -39,17 +47,18 @@ class AddActivity : AppCompatActivity() {
 
         // Získání předaného ID cesty
         val receivedIntent = intent
-        val cestaId = receivedIntent.getLongExtra("cestaId", 0)
+        cestaId = receivedIntent.getLongExtra("cestaId", 0)
 
+        // Pokud je cestaId nenulové, načti informace o cestě a zobraz je
         if (cestaId != 0L) {
-            // Načtení informací o cestě pomocí ID a zobrazení v UI
             lifecycleScope.launch {
                 val cesta = cestaModel.getCestaById(cestaId)
                 populateUI(cesta)
             }
         }
     }
-    // Metoda pro inicializaci obsahů Spinnerů (3 spinnery)
+
+    // Metoda pro inicializaci obsahu Spinnerů (3 spinnery mám)
     private fun setupSpinner() {
         // Odkazy na Spinnery z layoutu zapis.xml
         val roadGradeSpinner: Spinner = findViewById(R.id.difficultySpinner)
@@ -81,7 +90,7 @@ class AddActivity : AppCompatActivity() {
         roadCharacterSpinner.adapter = adapterCharacter
     }
 
-    // Metoda pro přidání nové cesty
+    // Metoda pro přidání nebo aktualizaci cesty PŘEDĚLAT/ROZDĚLIT
     private fun newCesta() {
         // Odkazy na vstupní prvky z layoutu
         val roadNameEditText: EditText = findViewById(R.id.nameEditText)
@@ -112,9 +121,19 @@ class AddActivity : AppCompatActivity() {
         if (cestaName.isNotBlank() && fallCountString.isNotBlank() && minuteString.isNotBlank() && secondString.isNotBlank()
             && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank()) {
 
-            // Získání předaného ID cesty
-            val receivedIntent = intent
-            val cestaId = receivedIntent.getLongExtra("cestaId", 0)
+            // Vytvoření instance CestaEntity s použitím konstruktoru
+            val newCesta = CestaEntity(
+                roadName = cestaName,
+                fallCount = fallCountString.toInt(),
+                climbStyle = styleSpinner,
+                grade = gradeSpinner,
+                roadChar = charSpinner,
+                timeMinute = minuteString.toInt(),
+                timeSecond = secondString.toInt(),
+                description = descriptionRoad,
+                opinion = opinionRoad,
+                date = currentDate
+            )
 
             lifecycleScope.launch {
                 // Pokud máme cestaId, provedeme aktualizaci existující cesty
@@ -136,38 +155,21 @@ class AddActivity : AppCompatActivity() {
                     }
 
                     // Aktualizace cesty v databázi
-                    cestaModel.removeCesta(existingCesta)
-                    cestaModel.insertCesta(existingCesta)
+                    cestaModel.addOrUpdateCesta(existingCesta)
 
-                    showToast("Cesta aktualizována!", Toast.LENGTH_LONG)
+                    cestaController.showToast("Cesta aktualizována!", Toast.LENGTH_LONG)
                     finish()
                 } else {
                     // Pokud nemáme cestaId, vytvoříme a vložíme novou cestu
-                    cestaModel.addNewCesta(
-                        cestaName,
-                        fallCountString.toInt(),
-                        styleSpinner,
-                        gradeSpinner,
-                        charSpinner,
-                        minuteString.toInt(),
-                        secondString.toInt(),
-                        descriptionRoad,
-                        opinionRoad,
-                        currentDate
-                    )
+                    cestaModel.addOrUpdateCesta(newCesta)
 
-                    showToast("Cesta přidána!", Toast.LENGTH_LONG)
+                    cestaController.showToast("Cesta přidána!", Toast.LENGTH_LONG)
                     finish()
                 }
             }
         } else {
-            showToast("Nevyplnil jste všechno.", Toast.LENGTH_SHORT)
+            cestaController.showToast("Nevyplnil jste všechno.", Toast.LENGTH_SHORT)
         }
-    }
-
-    // Metoda pro zobrazení zprávy
-    private fun showToast(message: String, duration: Int) {
-        Toast.makeText(this, message, duration).show()
     }
 
     // Metoda pro nastavení akce tlačítka zpět
@@ -175,6 +177,8 @@ class AddActivity : AppCompatActivity() {
         onBackPressedDispatcher.onBackPressed()
         return true
     }
+
+    // Metoda pro naplnění uživatelského rozhraní hodnotami z objektu CestaEntity
     private fun populateUI(cesta: CestaEntity) {
         // Nastavení hodnot do jednotlivých polí ve vaší aktivitě
         val roadNameEditText: EditText = findViewById(R.id.nameEditText)
@@ -197,7 +201,7 @@ class AddActivity : AppCompatActivity() {
 
         // Nastavení vybraného data
         val calendarView: CalendarView = findViewById(R.id.calendarView)
-        calendarView.setDate(cesta.date)
+        calendarView.date = cesta.date
 
         // Nastavení hodnot do spinnerů
         val difficultyLevels = resources.getStringArray(R.array.Grade)
@@ -209,6 +213,4 @@ class AddActivity : AppCompatActivity() {
         roadStyleSpinner.setSelection(styleLevels.indexOf(cesta.climbStyle))
         roadCharSpinner.setSelection(characterLevels.indexOf(cesta.roadChar))
     }
-
 }
-
