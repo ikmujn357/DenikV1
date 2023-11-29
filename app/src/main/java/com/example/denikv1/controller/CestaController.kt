@@ -1,7 +1,6 @@
 package com.example.denikv1
 
 import android.content.Context
-import android.widget.Toast
 
 // Rozhraní
 interface CestaController {
@@ -18,7 +17,7 @@ interface CestaController {
 
     // Metoda pro získání všech cest se zadaným názvem
     suspend fun getAllCestaByName(roadName: String): List<CestaEntity>
-
+/*
     // Metoda pro validaci a přidání nové cesty
     suspend fun validateAndAddNewCesta(
         cestaName: String,
@@ -32,7 +31,7 @@ interface CestaController {
         opinionRoad: String,
         selectedDate: Long
     )
-
+*/
     // Metoda pro zobrazení Toast zprávy
     fun showToast(message: String, duration: Int)
 }
@@ -59,7 +58,7 @@ class CestaControllerImpl(private val cestaModel: CestaModel) : CestaController 
     override suspend fun getAllCestaByName(roadName: String): List<CestaEntity> {
         return cestaModel.getAllCestaByName(roadName)
     }
-
+/*
     // Metoda  přidání nové cesty s kontrolou, zda jsou vyplňěný některé údaje
     override suspend fun validateAndAddNewCesta(
         cestaName: String,
@@ -98,9 +97,11 @@ class CestaControllerImpl(private val cestaModel: CestaModel) : CestaController 
             showToast("Nevyplnil jste všechno.", Toast.LENGTH_SHORT)
         }
     }
-
+*/
     // Metoda pro zobrazení Toast zprávy
     override fun showToast(message: String, duration: Int) {
 
     }
+
+
 }

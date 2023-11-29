@@ -1,25 +1,25 @@
 package com.example.denikv1
 
+import android.content.Context
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 
 interface AllStatisticsController {
-    fun getDataGraph(): BarGraphSeries<DataPoint>
-    fun getXLabelsGraph(): Array<String>
+    fun getDataGraph(context: Context): BarGraphSeries<DataPoint>
+    fun getXLabelsGraph(context: Context): Array<String>
 }
 
 // implementace kontroléru pro celkové statistiky
 class AllStatisticsControllerImpl(
-    private val model: AllStatisticsModel
+    private val model: AllStatisticsModel,
+    private val context: Context
 ) : AllStatisticsController {
 
-    //metoda pro získání dat pro sloupcový graf
-    override fun getDataGraph(): BarGraphSeries<DataPoint> {
-        return model.getDataGraph()
+    override fun getDataGraph(context: Context): BarGraphSeries<DataPoint> {
+        return model.getDataGraph(context)
     }
 
-    //metoda pro získání osy X pro graf.
-    override fun getXLabelsGraph(): Array<String> {
-        return model.getXLabelsGraph()
+    override fun getXLabelsGraph(context: Context): Array<String> {
+        return model.getXLabelsGraph(context)
     }
 }

@@ -1,33 +1,40 @@
 package com.example.denikv1
 
+import android.content.Context
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
+import kotlinx.coroutines.runBlocking
 
 // Rozhraní pro model statistik se sloupcovým grafem
 interface AllStatisticsModel {
-    //  Získá data pro sloupcový graf
-    fun getDataGraph(): BarGraphSeries<DataPoint>
-    //Získá popisky osy X pro graf.
-    fun getXLabelsGraph(): Array<String>
+    fun getDataGraph(context: Context): BarGraphSeries<DataPoint>
+    fun getXLabelsGraph(context: Context): Array<String>
+    fun getUniqueDifficulties(context: Context): List<String>
 }
 
 // Implementace rozhraní pro demonstraci dat DOČASNÉ ŘEŠENÍ
-class AllStatisticsModelImp: AllStatisticsModel {
+class AllStatisticsModelImpl(private val cestaModel: CestaModel, private val context: Context) : AllStatisticsModel {
 
-    private val dataGraph = BarGraphSeries(arrayOf(
-        DataPoint(1.0, 2.0),
-        DataPoint(3.0, 4.0)
-    ))
+    override fun getDataGraph(context: Context): BarGraphSeries<DataPoint> {
+        val allCesta = runBlocking { cestaModel.getAllCesta() }
+        val grades = context.resources.getStringArray(R.array.Grade)
 
-    private val xLabelsGraph = arrayOf(
-        "4","5", "5+", "6-", "6","6+", "7-", "7", "7+", "8-", "8", "8+", "9-", "9"
-    )
+        val distinctDifficulties = allCesta.map { it.grade }.distinct()
 
-    override fun getDataGraph(): BarGraphSeries<DataPoint> {
-        return dataGraph
+        val dataPoints = distinctDifficulties.mapIndexed { index, difficulty ->
+            val count = allCesta.count { it.grade == difficulty }
+            DataPoint(index.toDouble(), count.toDouble())
+        }.toTypedArray()
+
+        return BarGraphSeries(dataPoints)
     }
 
-    override fun getXLabelsGraph(): Array<String> {
-        return xLabelsGraph
+    override fun getXLabelsGraph(context: Context): Array<String> {
+        return getUniqueDifficulties(context).toTypedArray()
+    }
+
+    override fun getUniqueDifficulties(context: Context): List<String> {
+        val allCesta = runBlocking { cestaModel.getAllCesta() }
+        return allCesta.map { it.grade }.distinct()
     }
 }

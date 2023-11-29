@@ -122,7 +122,7 @@ class FindActivity : AppCompatActivity() {
                 updateRecyclerView(cesty)
             } catch (e: Exception) {
                 // Logování chyby v případě neúspěchu
-                Log.e("FindActivity", "Error loading and displaying cesty", e)
+                Log.e("FindActivity", "Nelze načíst cesty", e)
             }
         }
     }
