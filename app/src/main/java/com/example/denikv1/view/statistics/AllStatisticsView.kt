@@ -38,7 +38,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
         graphView.viewport.isYAxisBoundsManual = true
 
         val maxY = series.highestValueY
-        graphView.viewport.setMaxX(series.highestValueX)
+        graphView.viewport.setMaxX(series.highestValueX + 0.5)
         graphView.viewport.setMaxY(maxY + 1.0)
 
         graphView.addSeries(series)
@@ -54,6 +54,9 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
         val staticLabelsFormatter = StaticLabelsFormatter(graphView)
         staticLabelsFormatter.setHorizontalLabels(controller.getXLabelsGraph(requireContext()))
         graphView.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+
+        // Přidat následující řádek pro posunutí labelů o jedno místo doprava
+        graphView.viewport.setMinX(0.5)
 
         val barWidthPx = 75
         series.spacing = barWidthPx

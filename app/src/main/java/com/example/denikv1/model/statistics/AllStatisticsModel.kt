@@ -23,15 +23,17 @@ class AllStatisticsModelImpl(private val cestaModel: CestaModel, private val con
 
         val dataPoints = distinctDifficulties.mapIndexed { index, difficulty ->
             val count = allCesta.count { it.grade == difficulty }
-            DataPoint(index.toDouble(), count.toDouble())
+            DataPoint(index + 1.0, count.toDouble()) // Přidán posun o 1 na ose x
         }.toTypedArray()
 
         return BarGraphSeries(dataPoints)
     }
 
     override fun getXLabelsGraph(context: Context): Array<String> {
-        return getUniqueDifficulties(context).toTypedArray()
+        val labels = getUniqueDifficulties(context).toTypedArray()
+        return arrayOf(*labels,"")  // Přidat prázdný label na začátek pole
     }
+
 
     override fun getUniqueDifficulties(context: Context): List<String> {
         val allCesta = runBlocking { cestaModel.getAllCesta() }
