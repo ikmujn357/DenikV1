@@ -33,7 +33,7 @@ class CustomArrayAdapter(context: Context, resource: Int, items: List<String>) :
         textView.text = getItem(position)
 
         // Nastavení zarovnání textu na střed (nefunguje)
-        textView.gravity = Gravity.CENTER
+
 
         return view
     }

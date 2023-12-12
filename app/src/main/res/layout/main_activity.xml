@@ -7,27 +7,30 @@
     <LinearLayout
         android:id="@+id/topPanel"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="30dp"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="end|bottom">
 
         <Button
             android:id="@+id/button_add"
             android:layout_width="55dp"
             android:layout_height="match_parent"
-            android:drawableStart="@android:drawable/ic_menu_add" />
+            android:drawableStart="@drawable/add2"
+            android:background="@android:color/transparent" />
 
         <Button
             android:id="@+id/button_find"
-            android:layout_width="55dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:drawableStart="@android:drawable/ic_menu_search" />
+            android:drawableStart="@drawable/search"
+            android:background="@android:color/transparent" />
 
         <Button
             android:id="@+id/button_statistics"
             android:layout_width="55dp"
             android:layout_height="match_parent"
-            android:drawableTop="@android:drawable/ic_menu_sort_by_size" />
+            android:drawableTop="@drawable/statistics"
+            android:background="@android:color/transparent" />
 
     </LinearLayout>
 
@@ -41,10 +44,14 @@
     <!-- Tlačítko pro export -->
     <Button
         android:id="@+id/exportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="40dp"
+        android:drawableTop="@drawable/download"
         android:text="Export"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent" />
 
 </RelativeLayout>

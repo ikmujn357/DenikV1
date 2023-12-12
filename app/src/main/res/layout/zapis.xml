@@ -27,7 +27,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Jméno cesty" />
+                android:text="Jméno cesty"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
 
             <EditText
@@ -48,7 +50,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Počet pádů" />
+                android:text="Počet pádů"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <EditText
                 android:id="@+id/fallEditText"
@@ -68,7 +72,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Styl přelezu" />
+                android:text="Styl přelezu"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <Spinner
                 android:id="@+id/styleSpinner"
@@ -85,7 +91,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Obtížnost" />
+                android:text="Obtížnost"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <Spinner
                 android:id="@+id/difficultySpinner"
@@ -102,7 +110,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Charakter cesty" />
+                android:text="Charakter cesty"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <Spinner
                 android:id="@+id/characterSpinner"
@@ -119,7 +129,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Čas" />
+                android:text="Čas"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -139,7 +151,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text=":" />
+                    android:text=":"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
 
                 <EditText
                     android:id="@+id/secondsEditText"
@@ -162,7 +176,9 @@
                 android:textSize="16sp"
                 android:layout_gravity="center"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="32dp" />
+                android:layout_marginTop="32dp"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <!-- Velké textové pole pro popis cesty -->
             <EditText
@@ -186,7 +202,9 @@
                 android:text="Popište, proč se vám cesta líbila/nelíbila"
                 android:layout_below="@id/descriptionEditText"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
 
             <!-- Textové pole pro popis názoru na cestu -->
             <EditText
@@ -208,7 +226,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Uložit"
-                android:layout_below="@id/opinionEditText"
+                android:drawableTop="@drawable/save"
+                android:background="@android:color/transparent"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="32dp" />
         </LinearLayout>

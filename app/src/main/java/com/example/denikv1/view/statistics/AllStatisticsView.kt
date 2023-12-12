@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.helper.StaticLabelsFormatter
-import com.jjoe64.graphview.series.BarGraphSeries
 
 interface AllStatisticsView {
     fun displayGraph(view: View)
@@ -24,7 +23,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
     ): View? {
         val view = inflater.inflate(R.layout.celkova, container, false)
         cestaModel = CestaModelImpl(requireContext())
-        val statisticsModel = AllStatisticsModelImpl(cestaModel, requireContext())
+        val statisticsModel = AllStatisticsModelImpl(cestaModel)
         controller = AllStatisticsControllerImpl(statisticsModel, requireContext())
         displayGraph(view)
         return view
@@ -49,7 +48,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
 
         graphView.gridLabelRenderer.labelHorizontalHeight = 50
         graphView.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)
-        graphView.gridLabelRenderer.setHorizontalLabelsAngle(0)
+        graphView.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
         val staticLabelsFormatter = StaticLabelsFormatter(graphView)
         staticLabelsFormatter.setHorizontalLabels(controller.getXLabelsGraph(requireContext()))
@@ -58,7 +57,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
         // Přidat následující řádek pro posunutí labelů o jedno místo doprava
         graphView.viewport.setMinX(0.5)
 
-        val barWidthPx = 75
+        val barWidthPx = 25
         series.spacing = barWidthPx
     }
 }
