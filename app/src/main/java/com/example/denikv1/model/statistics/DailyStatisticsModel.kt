@@ -14,20 +14,36 @@ interface DailyStatisticsModel {
     fun getDataGraph1(context: Context, startDate: Long, endDate: Long): BarGraphSeries<DataPoint>
 
     // Metoda pro získání osy X pro první sloupcový graf
-    fun getXLabelsGraph1(context: Context): Array<String>
+    fun getXLabelsGraph1(context: Context, startDate: Long, endDate: Long): Array<String>
 
+    fun getDataByDate (startDate: Long, endDate: Long): List<CestaEntity>
     // Metoda pro získání unikátních obtížností
-    fun getUniqueDifficulties(context: Context): List<String>
+    fun getUniqueDifficulty(context: Context, startDate: Long, endDate: Long): List<String>
+    fun getUniqueStyle(context: Context, startDate: Long, endDate: Long): List<String>
 
     // Metoda pro získání dat pro druhý sloupcový graf
-    fun getDataGraph2(): BarGraphSeries<DataPoint>
+    fun getDataGraph2(context: Context, startDate: Long, endDate: Long): BarGraphSeries<DataPoint>
 
     // Metoda pro získání osy X pro druhý sloupcový graf
-    fun getXLabelsGraph2(): Array<String>
+    fun getXLabelsGraph2(context: Context, startDate: Long, endDate: Long): Array<String>
 }
 
 // Implementace rozhraní pro model denních statistik
 class DailyStatisticsModelImpl(private val cestaModel: CestaModel) : DailyStatisticsModel {
+    override fun getDataByDate (startDate: Long, endDate: Long): List<CestaEntity> {
+        return runBlocking { cestaModel.getAllCestaForDateRange(startDate, endDate) }
+    }
+
+    override fun getUniqueDifficulty(context: Context, startDate: Long, endDate: Long): List<String> {
+        val allCesta = getDataByDate (startDate, endDate)
+        return allCesta.map { it.grade }.distinct()
+    }
+
+    override fun getUniqueStyle(context: Context, startDate: Long, endDate: Long): List<String> {
+        val allCesta = getDataByDate (startDate, endDate)
+        return allCesta.map { it.climbStyle }.distinct()
+    }
+
 
     // Komparátor pro porovnání obtížností podle jejich pořadí
     private val difficultyComparator = Comparator<String> { difficulty1, difficulty2 ->
@@ -43,10 +59,20 @@ class DailyStatisticsModelImpl(private val cestaModel: CestaModel) : DailyStatis
         orderMap[difficulty1]!!.compareTo(orderMap[difficulty2]!!)
     }
 
+    private val climbingStyleComparator = Comparator<String> { style1, style2 ->
+        val orderMap = mapOf(
+            "Flash" to 1, "On sight" to 2, "Top rope" to 3,
+            "Red point" to 4, "Pink point" to 5, "All free" to 6
+        )
+
+        orderMap[style1]!!.compareTo(orderMap[style2]!!)
+    }
+
+
     // Metoda pro získání dat pro první sloupcový graf
     override fun getDataGraph1(context: Context, startDate: Long, endDate: Long): BarGraphSeries<DataPoint> {
         // Načtení všech cest pro zadaný rozsah dat
-        val allCesta = runBlocking { cestaModel.getAllCestaForDateRange(startDate, endDate) }
+        val allCesta = getDataByDate(startDate,endDate)
 
         // Pokud nejsou žádná data, vrátíme prázdný graf
         if (allCesta == null) {
@@ -54,7 +80,7 @@ class DailyStatisticsModelImpl(private val cestaModel: CestaModel) : DailyStatis
         }
 
         // Seřazení unikátních obtížností podle definovaného pořadí
-        val distinctDifficulties = getUniqueDifficulties(context).sortedWith(difficultyComparator)
+        val distinctDifficulties = getUniqueDifficulty(context, startDate,endDate).sortedWith(difficultyComparator)
 
         // Vytvoření datových bodů pro sloupcový graf
         val dataPoints = distinctDifficulties.mapIndexed { index, difficulty ->
@@ -66,38 +92,38 @@ class DailyStatisticsModelImpl(private val cestaModel: CestaModel) : DailyStatis
     }
 
     // Metoda pro získání osy X pro první sloupcový graf
-    override fun getXLabelsGraph1(context: Context): Array<String> {
+    override fun getXLabelsGraph1(context: Context, startDate: Long, endDate: Long): Array<String> {
         // Seřazení unikátních obtížností podle definovaného pořadí a přidání prázdného labelu na konec
-        val labels = getUniqueDifficulties(context).sortedWith(difficultyComparator).toTypedArray()
+        val labels = getUniqueDifficulty(context, startDate, endDate).sortedWith(difficultyComparator).toTypedArray()
         return arrayOf(*labels, "")
     }
 
-    // Metoda pro získání unikátních obtížností ze všech cest
-    override fun getUniqueDifficulties(context: Context): List<String> {
-        val allCesta = runBlocking { cestaModel.getAllCesta() }
-        return allCesta.map { it.grade }.distinct()
-    }
-
-    // Předdefinovaná data pro druhý sloupcový graf
-    private val dataGraph2 = BarGraphSeries(
-        arrayOf(
-            DataPoint(1.0, 2.0),
-            DataPoint(3.0, 4.0)
-        )
-    )
-
-    // Předdefinovaná data pro osu X druhého sloupcového grafu
-    private val xLabelsGraph2 = arrayOf(
-        "FLash", "RP", "PP", "TR", "AF",
-    )
-
     // Metoda pro získání dat pro druhý sloupcový graf
-    override fun getDataGraph2(): BarGraphSeries<DataPoint> {
-        return dataGraph2
+    override fun getDataGraph2(context: Context, startDate: Long, endDate: Long): BarGraphSeries<DataPoint> {
+        // Načtení všech cest pro zadaný rozsah dat
+        val allCesta = getDataByDate(startDate,endDate)
+
+        // Pokud nejsou žádná data, vrátíme prázdný graf
+        if (allCesta == null) {
+            return BarGraphSeries(emptyArray())
+        }
+
+        // Seřazení unikátních obtížností podle definovaného pořadí
+        val distinctStyle = getUniqueStyle(context, startDate,endDate).sortedWith(climbingStyleComparator)
+
+        // Vytvoření datových bodů pro sloupcový graf
+        val dataPoints = distinctStyle.mapIndexed { index, style ->
+            val count = allCesta.count { it.climbStyle == style }
+            DataPoint(index + 1.0, count.toDouble())
+        }.toTypedArray()
+
+        return BarGraphSeries(dataPoints)
     }
 
     // Metoda pro získání osy X pro druhý sloupcový graf
-    override fun getXLabelsGraph2(): Array<String> {
-        return xLabelsGraph2
+    override fun getXLabelsGraph2(context: Context, startDate: Long, endDate: Long): Array<String> {
+        // Seřazení unikátních obtížností podle definovaného pořadí a přidání prázdného labelu na konec
+        val labels = getUniqueStyle(context, startDate, endDate).sortedWith(climbingStyleComparator).toTypedArray()
+        return arrayOf(*labels, "")
     }
 }

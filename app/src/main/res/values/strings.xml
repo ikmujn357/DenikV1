@@ -41,8 +41,9 @@
         <item>Flash</item>
         <item>On sight</item>
         <item>Top rope</item>
-        <item>Redpoited</item>
+        <item>Red point</item>
         <item>Pink point</item>
+        <item>All free</item>
     </string-array>
 
     <string-array name="Character">

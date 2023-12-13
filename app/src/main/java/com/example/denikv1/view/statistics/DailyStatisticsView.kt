@@ -21,8 +21,8 @@ import java.util.Calendar
 
 // Rozhraní
 interface DailyStatisticsView {
-    fun displayGraph1(view: View, year: Int, month: Int, dayOfMonth: Int)
-    fun displayGraph2(view: View)
+    fun updateGraph1(series: BarGraphSeries<DataPoint>, startDate: Long, endDate: Long)
+    fun updateGraph2(series: BarGraphSeries<DataPoint>, startDate: Long, endDate: Long)
 }
 
 // Třída DailyStatisticsFragment implementující rozhraní
@@ -31,6 +31,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
     private lateinit var cestaModel: CestaModel
     private lateinit var calendarView: CalendarView
     private lateinit var graphView1: GraphView
+    private lateinit var graphView2: GraphView
 
     private val calendar: Calendar = Calendar.getInstance()
 
@@ -45,6 +46,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
 
         // Inicializace pohledů
         graphView1 = view.findViewById(R.id.graph_obtiznost_denni)
+        graphView2 = view.findViewById(R.id.graph_styl_prelezu)
         calendarView = view.findViewById(R.id.calendarView)
 
         // Nastavení Listener pro změnu data v CalendarView
@@ -52,7 +54,6 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
             (controller as DailyStatisticsControllerImpl).onDateChanged(year, month, dayOfMonth)
         }
 
-        val currentDate = calendar.timeInMillis
         (controller as DailyStatisticsControllerImpl).onDateChanged(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -63,8 +64,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
     }
 
     // Aktualizace prvního grafu
-    fun updateGraph(series: BarGraphSeries<DataPoint>) {
-        // Nastavení mezí pro osu X a Y
+    override fun updateGraph1(series: BarGraphSeries<DataPoint>, startDate: Long, endDate: Long) {
         graphView1.viewport.isXAxisBoundsManual = true
         graphView1.viewport.isYAxisBoundsManual = true
 
@@ -77,117 +77,97 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
         graphView1.addSeries(series)
 
         // Nastavení počtu horizontálních a vertikálních popisků
-        val numLabels = controller.getXLabelsGraph1(requireContext()).size
-        graphView1.gridLabelRenderer.numHorizontalLabels = numLabels
-        graphView1.gridLabelRenderer.numVerticalLabels = 5
+        val labelsGraph1 = controller.getXLabelsGraph1(requireContext(), startDate, endDate)
 
-        // Nastavení popisků
-        graphView1.gridLabelRenderer.labelHorizontalHeight = 50
-        graphView1.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)
-        graphView1.gridLabelRenderer.setHorizontalLabelsAngle(-25)
+        if (labelsGraph1.size > 1) {
+            graphView1.viewport.isXAxisBoundsManual = true
+            graphView1.viewport.isYAxisBoundsManual = true
+            graphView1.viewport.setMinX(0.5)
+            graphView1.viewport.setMinY(0.0)
+            graphView1.gridLabelRenderer.numVerticalLabels = 5
 
-        // Nastavení statických popisků pro osu X
-        val staticLabelsFormatter = StaticLabelsFormatter(graphView1)
-        staticLabelsFormatter.setHorizontalLabels(controller.getXLabelsGraph1(requireContext()))
-        graphView1.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+            // Nastavení popisků
+            graphView1.gridLabelRenderer.labelHorizontalHeight = 50
+            graphView1.gridLabelRenderer.verticalLabelsAlign = Paint.Align.CENTER
+            graphView1.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
-        // Nastavení minimální hodnoty pro osu X
-        graphView1.viewport.setMinX(0.5)
+            // Nastavení statických popisků pro osu X
+            val staticLabelsFormatter = StaticLabelsFormatter(graphView1)
+            staticLabelsFormatter.setHorizontalLabels(labelsGraph1)
+            graphView1.gridLabelRenderer.labelFormatter = staticLabelsFormatter
 
-        // Nastavení mezer mezi sloupci
-        val barWidthPx = 25
-        series.spacing = barWidthPx
+            // Nastavení minimální hodnoty pro osu X
+            graphView1.viewport.setMinX(0.5)
+            graphView1.viewport.setMinY(0.0)
+
+            // Nastavení mezer mezi sloupci
+            val barWidthPx = 25
+            series.spacing = barWidthPx
+        }
+        else {
+            graphView1.viewport.isXAxisBoundsManual = true
+            graphView1.viewport.isYAxisBoundsManual = true
+            // Clear any existing labels or formatting
+            graphView1.gridLabelRenderer.numHorizontalLabels = 0
+            graphView1.gridLabelRenderer.numVerticalLabels = 0
+            val staticLabelsFormatter = StaticLabelsFormatter(graphView1)
+            staticLabelsFormatter.setHorizontalLabels(arrayOf("",""))
+            graphView1.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+            graphView1.viewport.setMinX(0.0)
+            graphView1.viewport.setMinY(0.0)
+        }
     }
 
-    // Zobrazení prvního grafu na podle vybraného data
-    override fun displayGraph1(view: View, year: Int, month: Int, dayOfMonth: Int) {
-        // Získání reference na GraphView
-        val graphView = view.findViewById<GraphView>(R.id.graph_obtiznost_denni)
-
-        // Nastavení aktuálního data a času
-        calendarView = view.findViewById(R.id.calendarView)
-        calendarView.date = System.currentTimeMillis()
-        val currentDate = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
-
-        // Nastavení posluchače pro změnu data v CalendarView
-        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            (controller as DailyStatisticsControllerImpl).onDateChanged(
-                year,
-                month,
-                dayOfMonth
-            )
-        }
-
-        // Načtení a zobrazení dat pro aktuální datum
-        val series = controller.getDataGraph1(requireContext(), currentDate)
-
-        // Nastavení mezí pro osu X a Y
-        graphView.viewport.isXAxisBoundsManual = true
-        graphView.viewport.isYAxisBoundsManual = true
+    override fun updateGraph2(series: BarGraphSeries<DataPoint>, startDate: Long, endDate: Long) {
+        graphView2.viewport.isXAxisBoundsManual = true
+        graphView2.viewport.isYAxisBoundsManual = true
 
         val maxY = series.highestValueY
-        graphView.viewport.setMaxX(series.highestValueX + 0.5)
-        graphView.viewport.setMaxY(maxY + 1.0)
+        graphView2.viewport.setMaxX(series.highestValueX + 0.5)
+        graphView2.viewport.setMaxY(maxY + 1.0)
 
-        graphView.removeAllSeries()
-        graphView.addSeries(series)
+        // Odebrání předchozích dat a přidání nových
+        graphView2.removeAllSeries()
+        graphView2.addSeries(series)
 
-        val numLabels = controller.getXLabelsGraph1(requireContext()).size
-        graphView.gridLabelRenderer.numHorizontalLabels = numLabels
-        graphView.gridLabelRenderer.numVerticalLabels = 5
+        // Nastavení počtu horizontálních a vertikálních popisků
+        val labelsGraph2 = controller.getXLabelsGraph2(requireContext(), startDate, endDate)
 
-        graphView.gridLabelRenderer.labelHorizontalHeight = 50
-        graphView.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)
-        graphView.gridLabelRenderer.setHorizontalLabelsAngle(-25)
+        if (labelsGraph2.size > 1) {
+            graphView2.viewport.isXAxisBoundsManual = true
+            graphView2.viewport.isYAxisBoundsManual = true
+            graphView2.viewport.setMinX(0.5)
+            graphView2.viewport.setMinY(0.0)
+            graphView2.gridLabelRenderer.numVerticalLabels = 5
 
-        val staticLabelsFormatter = StaticLabelsFormatter(graphView)
-        staticLabelsFormatter.setHorizontalLabels(controller.getXLabelsGraph1(requireContext()))
-        graphView.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+            // Nastavení popisků
+            graphView2.gridLabelRenderer.labelHorizontalHeight = 50
+            graphView2.gridLabelRenderer.verticalLabelsAlign = Paint.Align.CENTER
+            graphView2.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
-        // posunutí popisků o jedno místo doprava
-        graphView.viewport.setMinX(0.5)
+            // Nastavení statických popisků pro osu X
+            val staticLabelsFormatter = StaticLabelsFormatter(graphView2)
+            staticLabelsFormatter.setHorizontalLabels(labelsGraph2)
+            graphView2.gridLabelRenderer.labelFormatter = staticLabelsFormatter
 
-        // Nastavení mezer mezi sloupci
-        val barWidthPx = 25
-        series.spacing = barWidthPx
-    }
+            // Nastavení minimální hodnoty pro osu X
+            graphView2.viewport.setMinX(0.5)
+            graphView2.viewport.setMinY(0.0)
 
-    // Zobrazení druhého grafu
-    override fun displayGraph2(view: View) {
-
-        val graphView = view.findViewById<GraphView>(R.id.graph_styl_prelezu)
-
-
-        graphView.addSeries(controller.getDataGraph2())
-
-
-        graphView.viewport.isXAxisBoundsManual = true
-        graphView.viewport.setMinX(0.5)
-        graphView.viewport.setMaxX(1.5)
-
-        graphView.viewport.isYAxisBoundsManual = true
-        graphView.viewport.setMinY(0.0)
-        graphView.viewport.setMaxY(10.0)
-
-
-        graphView.gridLabelRenderer.numHorizontalLabels = 5
-        graphView.gridLabelRenderer.numVerticalLabels = 5
-
-
-        graphView.gridLabelRenderer.labelHorizontalHeight = 25
-        graphView.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)
-
-
-        graphView.gridLabelRenderer.setHorizontalLabelsAngle(50)
-
-
-        val staticLabelsFormatter = StaticLabelsFormatter(graphView)
-        staticLabelsFormatter.setHorizontalLabels(controller.getXLabelsGraph2())
-        graphView.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+            // Nastavení mezer mezi sloupci
+            val barWidthPx = 25
+            series.spacing = barWidthPx
+        } else {
+            graphView2.viewport.isXAxisBoundsManual = true
+            graphView2.viewport.isYAxisBoundsManual = true
+            // Clear any existing labels or formatting
+            graphView2.gridLabelRenderer.numHorizontalLabels = 0
+            graphView2.gridLabelRenderer.numVerticalLabels = 0
+            val staticLabelsFormatter = StaticLabelsFormatter(graphView2)
+            staticLabelsFormatter.setHorizontalLabels(arrayOf("", ""))
+            graphView2.gridLabelRenderer.labelFormatter = staticLabelsFormatter
+            graphView2.viewport.setMinX(0.0)
+            graphView2.viewport.setMinY(0.0)
+        }
     }
 }
