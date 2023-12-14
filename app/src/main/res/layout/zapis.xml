@@ -107,7 +107,7 @@
             <LinearLayout
                 android:id="@+id/topPanel"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:orientation="horizontal">
 
@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="@drawable/icon_selection_background"
-                    android:src= "@drawable/minus" />
+                    android:src="@drawable/minus" />
 
             </LinearLayout>
 
@@ -158,46 +158,94 @@
             <LinearLayout
                 android:id="@+id/topPanel2"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/button_sila"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_selection_background"
-                    android:src="@drawable/sila"
-                    android:scaleType="fitCenter" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/button_sila"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_selection_background"
+                        android:src="@drawable/sila"
+                        android:scaleType="fitCenter" />
+
+                    <TextView
+                        android:id="@+id/text_sila"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Silová"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        android:layout_marginStart="10dp"/>
+                </LinearLayout>
 
                 <Space
                     android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_height="20dp" />
 
-                <ImageButton
-                    android:id="@+id/button_technika"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_selection_background"
-                    android:src="@drawable/technika"
-                    android:scaleType="fitCenter" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/button_technika"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_selection_background"
+                        android:src="@drawable/technika"
+                        android:scaleType="fitCenter" />
+
+                    <TextView
+                        android:id="@+id/text_technika"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Technická"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        android:layout_marginStart="10dp"/>
+                </LinearLayout>
 
                 <Space
                     android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/button_kombinace"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_selection_background"
-                    android:src="@drawable/kombinace"
-                    android:scaleType="fitCenter" />
+                    <ImageButton
+                        android:id="@+id/button_kombinace"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_selection_background"
+                        android:src="@drawable/kombinace"
+                        android:scaleType="fitCenter" />
 
+                    <TextView
+                        android:id="@+id/text_Kombinace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Kombinace"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        android:layout_marginStart="10dp"/>
+                </LinearLayout>
             </LinearLayout>
+
 
             <TextView
                 android:id="@+id/timeText"

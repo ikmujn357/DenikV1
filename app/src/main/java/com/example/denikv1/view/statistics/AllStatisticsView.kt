@@ -45,7 +45,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
 
         val numLabels = controller.getXLabelsGraph(requireContext()).size
         graphView.gridLabelRenderer.numHorizontalLabels = numLabels
-        graphView.gridLabelRenderer.numVerticalLabels = 5
+        graphView.gridLabelRenderer.numVerticalLabels = maxY.toInt() + 2
 
         graphView.gridLabelRenderer.labelHorizontalHeight = 50
         graphView.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)

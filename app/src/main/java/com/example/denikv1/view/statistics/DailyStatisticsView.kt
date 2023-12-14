@@ -85,7 +85,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
             graphView1.viewport.isYAxisBoundsManual = true
             graphView1.viewport.setMinX(0.5)
             graphView1.viewport.setMinY(0.0)
-            graphView1.gridLabelRenderer.numVerticalLabels = 5
+            graphView1.gridLabelRenderer.numVerticalLabels = maxY.toInt() + 2
 
             // Nastavení popisků
             graphView1.gridLabelRenderer.labelHorizontalHeight = 50
@@ -140,7 +140,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
             graphView2.viewport.isYAxisBoundsManual = true
             graphView2.viewport.setMinX(0.5)
             graphView2.viewport.setMinY(0.0)
-            graphView2.gridLabelRenderer.numVerticalLabels = 5
+            graphView2.gridLabelRenderer.numVerticalLabels = maxY.toInt() + 2 // Změna na celočíselné hodnoty
 
             // Nastavení popisků
             graphView2.gridLabelRenderer.labelHorizontalHeight = 50
