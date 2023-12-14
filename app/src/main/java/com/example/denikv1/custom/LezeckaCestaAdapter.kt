@@ -29,7 +29,7 @@ class CestaAdapter(private val cesta: List<CestaEntity>, private val cestaClickL
 
         // Nastavení textu v textových polích ViewHolderu
         holder.CestaName.text = cesta.roadName
-        holder.CestaGrade.text = cesta.grade
+        holder.CestaGrade.text = cesta.gradeNum + cesta.gradeSign
 
         // Nastavení odstupu mezi položkami v RecyclerView
         val spacingInPixels = holder.itemView.resources.getDimensionPixelSize(R.dimen.spacing_between_items)

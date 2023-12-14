@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.helper.StaticLabelsFormatter
 
 interface AllStatisticsView {
@@ -48,6 +49,7 @@ class AllStatisticsFragment : Fragment(), AllStatisticsView {
 
         graphView.gridLabelRenderer.labelHorizontalHeight = 50
         graphView.gridLabelRenderer.setVerticalLabelsAlign(Paint.Align.CENTER)
+        graphView.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
         graphView.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
         val staticLabelsFormatter = StaticLabelsFormatter(graphView)

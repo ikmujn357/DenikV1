@@ -18,13 +18,14 @@ class AllStatisticsModelImpl(private val cestaModel: CestaModel) : AllStatistics
     //seřazení obtížností
     private val difficultyComparator = Comparator<String> { difficulty1, difficulty2 ->
         val orderMap = mapOf(
-            "1" to 1, "2" to 2, "2+" to 3, "3-" to 4, "3" to 5, "3+" to 6,
-            "4-" to 7, "4" to 8, "4+" to 9, "5-" to 10, "5" to 11, "5+" to 12,
-            "6-" to 13, "6" to 14, "6+" to 15, "7-" to 16, "7" to 17, "7+" to 18,
-            "8-" to 19, "8" to 20, "8+" to 21, "9-" to 22, "9" to 23, "9+" to 24,
-            "10-" to 25, "10" to 26, "11-" to 27, "11" to 28, "11+" to 29,
-            "12-" to 30, "12" to 31
+            "3-" to 1, "3" to 2, "3+" to 3,
+            "4-" to 4, "4" to 5, "4+" to 6, "5-" to 7, "5" to 8, "5+" to 9,
+            "6-" to 10, "6" to 11, "6+" to 12, "7-" to 13, "7" to 14, "7+" to 15,
+            "8-" to 16, "8" to 17, "8+" to 18, "9-" to 19, "9" to 20, "9+" to 21,
+            "10-" to 22, "10" to 23, "10+" to 24, "11-" to 25, "11" to 26,
+            "11+" to 27, "12-" to 28, "12" to 29, "12+" to 30
         )
+
 
         orderMap[difficulty1]!!.compareTo(orderMap[difficulty2]!!)
     }
@@ -34,7 +35,7 @@ class AllStatisticsModelImpl(private val cestaModel: CestaModel) : AllStatistics
         val distinctDifficulties = getUniqueDifficulties(context).sortedWith(difficultyComparator)
 
         val dataPoints = distinctDifficulties.mapIndexed { index, difficulty ->
-            val count = allCesta.count { it.grade == difficulty }
+            val count = allCesta.count { it.gradeNum + it.gradeSign == difficulty }
             DataPoint(index + 1.0, count.toDouble())
         }.toTypedArray()
 
@@ -48,6 +49,6 @@ class AllStatisticsModelImpl(private val cestaModel: CestaModel) : AllStatistics
 
     override fun getUniqueDifficulties(context: Context): List<String> {
         val allCesta = runBlocking { cestaModel.getAllCesta() }
-        return allCesta.map { it.grade }.distinct()
+        return allCesta.map { it.gradeNum + it.gradeSign }.distinct()
     }
 }

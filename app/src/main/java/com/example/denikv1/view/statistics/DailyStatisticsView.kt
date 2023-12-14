@@ -10,6 +10,7 @@ import android.widget.CalendarView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.jjoe64.graphview.GraphView
+import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.helper.StaticLabelsFormatter
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
@@ -89,6 +90,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
             // Nastavení popisků
             graphView1.gridLabelRenderer.labelHorizontalHeight = 50
             graphView1.gridLabelRenderer.verticalLabelsAlign = Paint.Align.CENTER
+            graphView1.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
             graphView1.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
             // Nastavení statických popisků pro osu X
@@ -143,6 +145,7 @@ class DailyStatisticsFragment : Fragment(), DailyStatisticsView {
             // Nastavení popisků
             graphView2.gridLabelRenderer.labelHorizontalHeight = 50
             graphView2.gridLabelRenderer.verticalLabelsAlign = Paint.Align.CENTER
+            graphView2.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
             graphView2.gridLabelRenderer.setHorizontalLabelsAngle(-25)
 
             // Nastavení statických popisků pro osu X

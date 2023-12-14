@@ -19,8 +19,11 @@ data class CestaEntity(
     // Styl lezení
     var climbStyle: String,
 
-    // Obtížnost cesty
-    var grade: String,
+    // Obtížnost cesty - číslo a znaménko oddělené
+    var gradeNum: String,
+
+    // Znaménko obtížnosti cesty
+    var gradeSign: String,
 
     // Charakter cesty
     var roadChar: String,
@@ -45,7 +48,8 @@ data class CestaEntity(
         roadName: String,
         fallCount: Int,
         climbStyle: String,
-        grade: String,
+        gradeNum: String,
+        gradeSign: String,
         roadChar: String,
         timeMinute: Int,
         timeSecond: Int,
@@ -53,6 +57,6 @@ data class CestaEntity(
         opinion: String,
         date: Long
     ) : this(
-        0, roadName, fallCount, climbStyle, grade, roadChar, timeMinute, timeSecond, description, opinion, date
+        0, roadName, fallCount, climbStyle, gradeNum, gradeSign, roadChar, timeMinute, timeSecond, description, opinion, date
     )
 }

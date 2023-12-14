@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColor
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -15,10 +14,13 @@ class AddActivity : AppCompatActivity() {
     private val cestaModel: CestaModel = CestaModelImpl(this)
     private val cestaController: CestaController = CestaControllerImpl(cestaModel)
     private var selectedDate: Long = 0
-    private var selectedButton: Button? = null
+    private var selectedButton: ImageButton? = null
+    private var selectedButton2: ImageButton? = null
     private var gradeModifier: String = ""
+    private var charModifier: String = ""
     private var cestaId: Long = 0
     private var selectedButtonTag: String? = null
+    private var selectedButtonTag2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +31,13 @@ class AddActivity : AppCompatActivity() {
 
         setupSpinner()
 
-        val plusButton: Button = findViewById(R.id.button_plus)
-        val nulaButton: Button = findViewById(R.id.button_nula)
-        val minusButton: Button = findViewById(R.id.button_minus)
+        val plusButton: ImageButton = findViewById(R.id.button_plus)
+        val nulaButton: ImageButton = findViewById(R.id.button_nula)
+        val minusButton: ImageButton = findViewById(R.id.button_minus)
+
+        val silaButton: ImageButton = findViewById(R.id.button_sila)
+        val technikaButton: ImageButton = findViewById(R.id.button_technika)
+        val kombinaceButton: ImageButton = findViewById(R.id.button_kombinace)
 
         plusButton.setOnClickListener {
             updateGradeModifier("+", plusButton)
@@ -39,13 +45,28 @@ class AddActivity : AppCompatActivity() {
         }
 
         nulaButton.setOnClickListener {
-            updateGradeModifier("0", nulaButton)
+            updateGradeModifier("", nulaButton)
             onButtonClicked(nulaButton)
         }
 
         minusButton.setOnClickListener {
             updateGradeModifier("-", minusButton)
             onButtonClicked(minusButton)
+        }
+
+        silaButton.setOnClickListener {
+            updateCharModifier("Silová", silaButton)
+            onButtonClicked2(silaButton)
+        }
+
+        technikaButton.setOnClickListener {
+            updateCharModifier("Technická", technikaButton)
+            onButtonClicked2(technikaButton)
+        }
+
+        kombinaceButton.setOnClickListener {
+            updateCharModifier("Kombinace", kombinaceButton)
+            onButtonClicked2(kombinaceButton)
         }
 
         val addCestaButton: Button = findViewById(R.id.saveButton)
@@ -75,58 +96,84 @@ class AddActivity : AppCompatActivity() {
         // Odmáčkne předchozí tlačítko, pokud existuje
         selectedButton?.isSelected = false
 
-        // Select the new icon
         view.isSelected = true
 
-        // Update selectedButtonTag based on the clicked icon
         selectedButtonTag = when (view.id) {
             R.id.button_plus -> "plus"
             R.id.button_nula -> "nula"
             R.id.button_minus -> "minus"
             else -> null
         }
+        selectedButton = view as? ImageButton
 
-        selectedButton = view as? Button
+
 
         // Aktualizujte barvy tlačítek
         updateSelectedButtonView()
     }
 
+    fun onButtonClicked2(view: View) {
+        // Odmáčkne předchozí tlačítko, pokud existuje
+        selectedButton2?.isSelected = false
+
+        view.isSelected = true
+
+        selectedButtonTag2 = when (view.id) {
+            R.id.button_sila -> "Síla"
+            R.id.button_technika -> "Technika"
+            R.id.button_kombinace -> "Kombinace"
+            else -> null
+        }
+        selectedButton2 = view as? ImageButton
+
+        // Aktualizujte barvy tlačítek
+        updateSelectedButtonView()
+    }
+
+
+
     private fun updateSelectedButtonView() {
+        val buttonPlus: ImageButton = findViewById(R.id.button_plus)
+        val buttonNula: ImageButton = findViewById(R.id.button_nula)
+        val buttonMinus: ImageButton = findViewById(R.id.button_minus)
 
-        val buttonPlus: Button = findViewById(R.id.button_plus)
-        val buttonNula: Button = findViewById(R.id.button_nula)
-        val buttonMinus: Button = findViewById(R.id.button_minus)
+        val buttonSila: ImageButton = findViewById(R.id.button_sila)
+        val buttonTechnika: ImageButton = findViewById(R.id.button_technika)
+        val buttonKombinace: ImageButton = findViewById(R.id.button_kombinace)
 
-        // Reset barvy všech tlačítek
-        buttonPlus.isSelected = false
-        buttonNula.isSelected = false
-        buttonMinus.isSelected = false
 
-        // Nastavení barvy pozadí vybraného tlačítka
-        val selectedColor = ContextCompat.getColor(this, R.color.purple_200)
         when (selectedButtonTag) {
             "plus" -> buttonPlus.isSelected = true
             "nula" -> buttonNula.isSelected = true
             "minus" -> buttonMinus.isSelected = true
         }
 
-        // Reset barvy všech tlačítek
-        buttonPlus.background.clearColorFilter()
-        buttonNula.background.clearColorFilter()
-        buttonMinus.background.clearColorFilter()
 
-        when (selectedButtonTag) {
-            "plus" -> buttonPlus.background.setColorFilter(selectedColor, PorterDuff.Mode.SRC_ATOP)
-            "nula" -> buttonNula.background.setColorFilter(selectedColor, PorterDuff.Mode.SRC_ATOP)
-            "minus" -> buttonMinus.background.setColorFilter(selectedColor, PorterDuff.Mode.SRC_ATOP)
+        buttonPlus.setBackgroundResource(if (selectedButtonTag == "plus") R.drawable.icon_selection_background else R.color.white)
+        buttonNula.setBackgroundResource(if (selectedButtonTag == "nula") R.drawable.icon_selection_background else R.color.white)
+        buttonMinus.setBackgroundResource(if (selectedButtonTag == "minus") R.drawable.icon_selection_background else R.color.white)
+
+        when (selectedButtonTag2) {
+            "Síla" -> buttonSila.isSelected = true
+            "Technika" -> buttonTechnika.isSelected = true
+            "Kombinace" -> buttonKombinace.isSelected = true
         }
+
+
+        buttonSila.setBackgroundResource(if (selectedButtonTag2 == "Síla") R.drawable.icon_selection_background else R.color.white)
+        buttonTechnika.setBackgroundResource(if (selectedButtonTag2 == "Technika") R.drawable.icon_selection_background else R.color.white)
+        buttonKombinace.setBackgroundResource(if (selectedButtonTag2 == "Kombinace") R.drawable.icon_selection_background else R.color.white)
+
     }
+
+
+
+
+
 
     private fun setupSpinner() {
         val roadGradeSpinner: Spinner = findViewById(R.id.difficultySpinner)
         val roadStyleSpinner: Spinner = findViewById(R.id.styleSpinner)
-        val roadCharacterSpinner: Spinner = findViewById(R.id.characterSpinner)
 
         val difficultyLevels = resources.getStringArray(R.array.Grade)
         val styleLevels = resources.getStringArray(R.array.Style)
@@ -138,7 +185,6 @@ class AddActivity : AppCompatActivity() {
 
         roadGradeSpinner.adapter = adapterDif
         roadStyleSpinner.adapter = adapterStyle
-        roadCharacterSpinner.adapter = adapterCharacter
 
         adapterDif.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapterStyle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -146,22 +192,44 @@ class AddActivity : AppCompatActivity() {
 
         roadGradeSpinner.adapter = adapterDif
         roadStyleSpinner.adapter = adapterStyle
-        roadCharacterSpinner.adapter = adapterCharacter
     }
 
-    private fun updateGradeModifier(value: String, button: Button) {
+    private fun updateGradeModifier(value: String, button: ImageButton) {
         gradeModifier = value
         selectedButton?.isSelected = false
         button.isSelected = true
         selectedButton = button
     }
 
+
+
+
+
+    private fun updateCharModifier(value: String, button: ImageButton) {
+        charModifier = value
+        selectedButton2?.isSelected = false
+        button.isSelected = true
+        selectedButton2 = button
+    }
+
+
     private fun newCesta() {
         val roadNameEditText: EditText = findViewById(R.id.nameEditText)
         val fallEditText: EditText = findViewById(R.id.fallEditText)
         val roadStyleSpinner: Spinner = findViewById(R.id.styleSpinner)
         val roadGradeSpinner: Spinner = findViewById(R.id.difficultySpinner)
-        val roadCharSpinner: Spinner = findViewById(R.id.characterSpinner)
+        val signImage = when {
+            selectedButtonTag == "plus" -> "+"
+            selectedButtonTag == "nula" -> ""
+            selectedButtonTag == "minus" -> "-"
+            else -> ""
+        }
+        val charImage = when {
+            selectedButtonTag2 == "Síla" -> "Silová"
+            selectedButtonTag2 == "Technika" -> "Technická"
+            selectedButtonTag2 == "Kombinace" -> "Kombinace"
+            else -> ""
+        }
         val minuteEditText: EditText = findViewById(R.id.minutesEditText)
         val secondEditText: EditText = findViewById(R.id.secondsEditText)
         val descriptionEditText: EditText = findViewById(R.id.descriptionEditText)
@@ -170,8 +238,10 @@ class AddActivity : AppCompatActivity() {
         val cestaName = roadNameEditText.text.toString()
         val fallCountString = fallEditText.text.toString()
         val styleSpinner = roadStyleSpinner.selectedItem.toString()
-        val gradeSpinner = roadGradeSpinner.selectedItem.toString() + gradeModifier
-        val charSpinner = roadCharSpinner.selectedItem.toString()
+        val gradeSpinner = roadGradeSpinner.selectedItem.toString()
+
+
+
         val minuteString = minuteEditText.text.toString()
         val secondString = secondEditText.text.toString()
         val descriptionRoad = descriptionEditText.text.toString()
@@ -180,14 +250,15 @@ class AddActivity : AppCompatActivity() {
         val currentDate = if (selectedDate == 0L) System.currentTimeMillis() else selectedDate
 
         if (cestaName.isNotBlank() && fallCountString.isNotBlank() && minuteString.isNotBlank() && secondString.isNotBlank()
-            && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charSpinner.isNotBlank()) {
+            && styleSpinner.isNotBlank() && gradeSpinner.isNotBlank() && charImage.isNotBlank()) {
 
             val newCesta = CestaEntity(
                 roadName = cestaName,
                 fallCount = fallCountString.toInt(),
                 climbStyle = styleSpinner,
-                grade = gradeSpinner,
-                roadChar = charSpinner,
+                gradeNum = gradeSpinner,
+                gradeSign = signImage,
+                roadChar = charImage,
                 timeMinute = minuteString.toInt(),
                 timeSecond = secondString.toInt(),
                 description = descriptionRoad,
@@ -202,8 +273,9 @@ class AddActivity : AppCompatActivity() {
                         this.roadName = cestaName
                         this.fallCount = fallCountString.toInt()
                         this.climbStyle = styleSpinner
-                        this.grade = gradeSpinner
-                        this.roadChar = charSpinner
+                        this.gradeNum = gradeSpinner
+                        this.gradeSign = signImage
+                        this.roadChar = charImage
                         this.timeMinute = minuteString.toInt()
                         this.timeSecond = secondString.toInt()
                         this.description = descriptionRoad
@@ -227,6 +299,7 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
@@ -237,7 +310,14 @@ class AddActivity : AppCompatActivity() {
         val fallEditText: EditText = findViewById(R.id.fallEditText)
         val roadStyleSpinner: Spinner = findViewById(R.id.styleSpinner)
         val roadGradeSpinner: Spinner = findViewById(R.id.difficultySpinner)
-        val roadCharSpinner: Spinner = findViewById(R.id.characterSpinner)
+/*        val charImage = when {
+            cesta.roadChar == "Síla" -> "Silová"
+            cesta.roadChar == "Technika" -> "Technická"
+            cesta.roadChar == "Kombinace" -> "Kombinace"
+            else -> ""
+        }
+
+ */
         val minuteEditText: EditText = findViewById(R.id.minutesEditText)
         val secondEditText: EditText = findViewById(R.id.secondsEditText)
         val descriptionEditText: EditText = findViewById(R.id.descriptionEditText)
@@ -251,12 +331,19 @@ class AddActivity : AppCompatActivity() {
         opinionEditText.setText(cesta.opinion)
 
         // Nastavení vybraného tlačítka
-        selectedButtonTag = when (cesta.grade.last()) {
-            '+' -> "plus"
-            '0' -> "nula"
-            '-' -> "minus"
+        selectedButtonTag = when (cesta.gradeSign) {
+            "+" -> "plus"
+            "-"-> "minus"
+            else -> "nula"
+        }
+
+        selectedButtonTag2 = when (cesta.roadChar) {
+            "Silová" -> "Síla"
+            "Technická" -> "Technika"
+            "Kombinace" -> "Kombinace"
             else -> null
         }
+
 
         // Znovu aktualizovat zobrazení vybraného tlačítka
         updateSelectedButtonView()
@@ -268,10 +355,8 @@ class AddActivity : AppCompatActivity() {
         // Nastavení pozice v Spinnerch
         val difficultyLevels = resources.getStringArray(R.array.Grade)
         val styleLevels = resources.getStringArray(R.array.Style)
-        val characterLevels = resources.getStringArray(R.array.Character)
 
-        roadGradeSpinner.setSelection(difficultyLevels.indexOf(cesta.grade.dropLast(1)))
+        roadGradeSpinner.setSelection(difficultyLevels.indexOf(cesta.gradeNum))
         roadStyleSpinner.setSelection(styleLevels.indexOf(cesta.climbStyle))
-        roadCharSpinner.setSelection(characterLevels.indexOf(cesta.roadChar))
     }
 }

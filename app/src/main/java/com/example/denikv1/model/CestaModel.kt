@@ -70,7 +70,8 @@ class CestaModelImpl(private val context: Context) : CestaModel {
                 roadName = cesta.roadName
                 fallCount = cesta.fallCount
                 climbStyle = cesta.climbStyle
-                grade = cesta.grade
+                gradeNum = cesta.gradeNum
+                gradeSign = cesta.gradeSign
                 roadChar = cesta.roadChar
                 timeMinute = cesta.timeMinute
                 timeSecond = cesta.timeSecond
@@ -100,7 +101,7 @@ class CestaModelImpl(private val context: Context) : CestaModel {
 
                 // Data
                 data.forEach { cesta ->
-                    csvWriter.append("${cesta.roadName},${cesta.fallCount},${cesta.climbStyle},${cesta.grade},${cesta.roadChar},${cesta.timeMinute},${cesta.timeSecond},${cesta.description},${cesta.opinion},${formatDate(cesta.date)}\n")
+                    csvWriter.append("${cesta.roadName},${cesta.fallCount},${cesta.climbStyle},${cesta.gradeNum},${cesta.gradeSign},${cesta.roadChar},${cesta.timeMinute},${cesta.timeSecond},${cesta.description},${cesta.opinion},${formatDate(cesta.date)}\n")
                 }
 
                 csvWriter.close()
